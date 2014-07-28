@@ -1,0 +1,138 @@
+
+			<?php
+			if (!$this->Html->ifSet($edit, false)) {
+			?>
+			<div class="row panel-fix">
+				<div class="col-md-12 top-focus-box">
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_contact_id", true), "contact_id");
+						$this->Form->fieldSelect("contact_id", $this->Html->ifSet($contacts), $this->Html->ifSet($vars->contact_id), array('id'=>"contact_id", 'class'=>"form-control"));
+						?>
+						<p class="help-block"><i class="fa fa-lightbulb-o fa-fw"></i> <?php $this->_("ClientContacts.contact_info.text_select_contact");?></p>
+					</div>
+				</div>
+			</div>
+			<?php
+			}
+			?>
+			<h4><?php $this->_("ClientContacts.contact_info.heading_contact");?></h4>
+			<div class="row panel-fix">
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_first_name", true), "first_name");
+						$this->Form->fieldText("first_name", $this->Html->ifSet($vars->first_name), array('id'=>"first_name", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_first_name", true)));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_last_name", true), "last_name");
+						$this->Form->fieldText("last_name", $this->Html->ifSet($vars->last_name), array('id'=>"last_name", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_last_name", true)));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_company", true), "company");
+						$this->Form->fieldText("company", $this->Html->ifSet($vars->company), array('id'=>"company", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_company", true)));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_address1", true), "address1");
+						$this->Form->fieldText("address1", $this->Html->ifSet($vars->address1), array('id'=>"address1", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_address1", true)));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_address2", true), "address2");
+						$this->Form->fieldText("address2", $this->Html->ifSet($vars->address2), array('id'=>"address2", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_address2", true)));
+						?>
+					</div>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_city", true), "city");
+						$this->Form->fieldText("city", $this->Html->ifSet($vars->city), array('id'=>"city", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_city", true)));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_country", true), "country");
+						$this->Form->fieldSelect("country", $this->Html->ifSet($countries), $this->Html->ifSet($vars->country), array('id'=>"country", 'class'=>"form-control"));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_state", true), "state");
+						$this->Form->fieldSelect("state", $this->Html->ifSet($states), $this->Html->ifSet($vars->state), array('id'=>"state", 'class'=>"form-control"));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_zip", true), "zip");
+						$this->Form->fieldText("zip", $this->Html->ifSet($vars->zip), array('id'=>"zip", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_zip", true)));
+						?>
+					</div>
+					<?php
+					if ($this->Html->ifSet($show_email, false)) {
+					?>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientContacts.contact_info.field_email", true), "email");
+						$this->Form->fieldText("email", $this->Html->ifSet($vars->email), array("id"=>"email", 'class'=>"form-control", 'placeholder'=>$this->_("ClientContacts.contact_info.field_email", true)));
+						?>
+					</div>
+					<?php
+					}
+					?>
+				</div>
+			</div>
+		
+<?php
+$this->Javascript->setInline("
+	$(document).ready(function() {
+		var contacts = " . $this->Html->ifSet($js_contacts) . ";
+		
+		$('#contact_id').change(function() {
+			if ($('#contact_id').val() != 'none') {
+				// Populate contacts data onto form
+				for (var i in contacts) {
+					if (contacts[i]['id'] == $('#contact_id').val()) {
+						// Set data
+						$('#first_name').val(contacts[i]['first_name']);
+						$('#last_name').val(contacts[i]['last_name']);
+						$('#address1').val(contacts[i]['address1']);
+						$('#address2').val(contacts[i]['address2']);
+						$('#city').val(contacts[i]['city']);
+						$('#country').val(contacts[i]['country']).trigger('change', [{state: contacts[i]['state']}]);
+						$('#zip').val(contacts[i]['zip']);
+						$('#email').val(contacts[i]['email']);
+						break;
+					}
+				}
+			}
+		});
+		
+		$('#country').change(function(e, state) {
+			$(this).blestaRequest('get', '" . $this->Html->safe($this->base_uri . "main/getstates/") . "' + $(this).val(), null, function(data) {
+					// Remove all existing items
+					$('option', '#state').remove();
+					
+					// Append all new items
+                    $.each($(this).blestaSortObject(data), function(index, item) {
+                        $('#state').append( new Option(item.value, item.key));
+                    });
+					
+					// Set state if given
+					if (state && state.state)
+						$('#state').val(state.state);
+				},
+				null,
+				{dataType: 'json'}
+			);
+		});
+	});
+");
+?>

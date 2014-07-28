@@ -1,0 +1,40 @@
+
+			<div class="row panel-fix">
+				<div class="col-md-12">
+					<h4><?php $this->_("ClientAccounts.ach_info.heading_ach");?></h4>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientAccounts.ach_info.field_type", true), "type");
+						$this->Form->fieldSelect("type", $this->Html->ifSet($types), $this->Html->ifSet($vars->type), array("id"=>"type", 'class'=>"form-control"));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientAccounts.ach_info.field_accountnum", true), "account");
+						$this->Form->fieldText("account", isset($vars->last4) ? str_pad($vars->last4, 9, "*", STR_PAD_LEFT) : $this->Html->ifSet($vars->account), array("id"=>"account", 'class'=>"form-control", 'placeholder'=>$this->_("ClientAccounts.ach_info.field_accountnum", true)));
+						?>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientAccounts.ach_info.field_routingnum", true), "routing");
+						$this->Form->fieldText("routing", isset($vars->last4) ? str_pad(null, 9, "*", STR_PAD_LEFT) : $this->Html->ifSet($vars->routing), array("id"=>"routing", 'class'=>"form-control", 'placeholder'=>$this->_("ClientAccounts.ach_info.field_routingnum", true)));
+						?>
+					</div>
+					<?php
+					if (isset($save_account) && $save_account) {
+					?>
+					<div class="checkbox">
+						<label>
+						<?php
+						$this->Form->fieldCheckbox("save_details", "true", isset($vars->save_details));
+						$this->_("ClientAccounts.ach_info.field_savedetails");
+						?>
+						</label>
+					</div>
+					<?php
+					}
+					?>
+				</div>
+			</div>

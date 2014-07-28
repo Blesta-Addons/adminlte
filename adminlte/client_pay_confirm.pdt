@@ -1,0 +1,109 @@
+		
+		<div class="col-md-12">
+			<?php
+			echo $this->Html->ifSet($message);
+			
+			$this->WidgetClient->clear();		
+			$this->WidgetClient->create($this->_("ClientPay.confirm.boxtitle_confirm", true), array('id'=>"client_pay_confirm"), $this->Html->ifSet($render_section, null));
+			$this->WidgetClient->startBody();
+			?>
+			<div class="row panel-fix">
+				<div class="col-md-12">
+					<?php
+					$this->Form->create();
+					$this->Form->fieldHidden("pay", "1");
+					?>
+					<h4><?php $this->_("ClientPay.confirm.payment_details");?></h4>
+					<?php
+					if ($this->Html->ifSet($client, false) || $this->Html->ifSet($gateway_name, false) || $this->Html->ifSet($account, false)) {
+					?>
+					<div>
+						<?php
+						if ($this->Html->ifSet($client, false)) {
+						?>
+						<p>
+							<?php $this->Html->_($client->first_name);?> <?php $this->Html->_($client->last_name);?><br />
+							<?php echo $this->Html->concat("<br />", $this->Html->safe($client->address1), $this->Html->safe($client->address2), $this->Html->safe($client->city) . " " . $this->Html->safe($client->state) . " " . $this->Html->safe($client->zip), $this->Html->safe($client->country));?>
+						</p>
+						<?php
+						}
+						if ($this->Html->ifSet($gateway_name, false)) {
+						?>
+						<p>
+							<?php $this->Html->_($gateway_name);?>
+						</p>
+						<?php
+						}
+						if ($this->Html->ifSet($account, false)) {
+						?>
+						<p>
+							<?php $this->Html->_($account->first_name);?> <?php $this->Html->_($account->last_name);?><br />
+							<?php echo $this->Html->concat("<br />", $this->Html->safe($account->address1), $this->Html->safe($account->address2), $this->Html->safe($account->city) . " " . $this->Html->safe($account->state) . " " . $this->Html->safe($account->zip), $this->Html->safe($account->country));?>
+						</p>
+						<p>
+							<?php $this->_("ClientPay.confirm.account_info", false, $this->Html->ifSet($account_types[$account_type]), ($account_type == "ach" ? $ach_types[$account->type] : $cc_types[$account->type]), $this->Html->ifSet($account->last4));?>
+							<?php
+							if ($this->Html->ifSet($account->expiration)) {
+								$date = substr($account->expiration, 0, 4) . "-" . substr($account->expiration, -2) . "-15";
+							?>
+							<br />
+							<?php $this->_("ClientPay.confirm.account_exp", false, $this->Date->format("F, Y", $date));?>
+							<?php
+							}
+							?>
+						</p>
+						<?php
+						}
+						?>
+					</div>
+					<?php
+					}
+					?>
+					<hr />
+					<div class="pull-right">
+						<div class="well well-sm">
+							<?php $this->_("ClientPay.confirm.total");?>
+							<strong><?php echo $this->CurrencyFormat->format($this->Html->ifSet($total), $currency);?></strong>
+						</div>
+					</div>
+					<div class="clearfix"></div>
+					
+					<div class="pull-right">
+						<a class="edit btn btn-default" href="<?php echo $this->Html->safe($this->base_uri . "pay/");?>">
+							<i class="fa fa-edit fa-fw"></i> <?php $this->_("ClientPay.confirm.field_edit");?>
+						</a>
+						<?php
+						if (!$this->Html->ifSet($gateway_buttons, false)) {
+						?>
+						<button type="submit" class="btn btn-default">
+							<i class="fa fa-plus-circle fa-fw"></i> <?php $this->_("ClientPay.confirm.field_submit");?>
+						</button>
+						<?php
+						}
+						?>
+					</div>
+					<?php
+					$this->Form->end();
+					
+					if ($this->Html->ifSet($gateway_buttons, false)) {
+					?>
+					<div class="clearfix"></div>
+						<?php
+						foreach ($this->Html->ifSet($gateway_buttons, array()) as $buttons) {
+							foreach ($buttons as $gateway_button) {
+							?>
+							<div class="pull-right martop10">
+								<?php echo $gateway_button;?>
+							</div>
+							<?php
+							}
+						}
+					}
+					?>
+				</div>
+			</div>
+			<?php
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>

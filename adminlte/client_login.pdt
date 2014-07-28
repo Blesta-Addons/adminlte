@@ -1,0 +1,191 @@
+	<div class="col-md-4 col-md-offset-4">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title"><?php $this->_("ClientLogin.index.description");?></h3>
+			</div>
+			<div class="panel-body">
+				<fieldset>
+					<?php echo $this->Html->ifSet($message);?>
+					<p><?php $this->_("ClientLogin.index.login_heading");?></p>
+					<div class="form-group">
+						<button type="submit" class="btn btn-lg btn-success btn-block" data-toggle="modal" data-target="#login">
+							<i class="fa fa-sign-in fa-1x fa-border"></i>
+							<?php $this->_("ClientLogin.index.field_loginsubmit");?>
+						</button>
+					</div>
+					<p>Lost your password?</p>
+					<div class="form-group">
+						<button type="submit" class="btn btn-lg btn-warning btn-block" data-toggle="modal" data-target="#resetpass">
+							<i class="fa fa-reply fa-1x fa-border"></i>
+							<?php $this->_("ClientLogin.index.link_resetpassword");?>
+						</button>
+					</div>
+				</fieldset>
+			</div>
+		</div>
+		
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">Company</h3>
+			</div>
+			<div class="panel-body">
+				<fieldset>
+					<a href="<?php echo $this->Html->safe($this->base_uri);?>" class="thumbnail">
+						<?php
+						if (!empty($theme_logo)) {
+						?>
+							<img src="<?php $this->Html->_($theme_logo);?>" alt="Logo" />
+						<?php
+						}
+						elseif (!empty($blesta_logo)) {
+						?>
+							<img src="<?php $this->Html->_($blesta_logo);?>" alt="Blesta" />
+						<?php
+						}
+						else {
+						?>
+							<img src="<?php echo $this->view_dir;?>images/logo.png" alt="Blesta" />
+						<?php
+						}
+						?>
+					</a>
+					<p class="text-center" > 
+						<address>
+							<strong><i class="fa fa-lock"></i> <?php $this->Html->_($company->name);?></strong><br />
+							<?php if($this->Html->ifSet($company->address)) { ;?>
+								<i class="fa fa-map-marker"></i> <?php $this->Html->_($company->address);?><hr />
+							<?php } ;?>
+							<?php if($this->Html->ifSet($company->phone)) { ;?>
+							<abbr title="Phone"><i class="fa fa-phone"></i> Phone:</abbr> <?php $this->Html->_($company->phone);?><hr />
+							<?php } ;?>
+							<?php if($this->Html->ifSet($company->fax)) { ;?>
+								<abbr title="Fax"><i class="fa fa-fax"></i> Fax:</abbr> <?php $this->Html->_($company->fax);?>
+							<?php } ;?>
+						</address>						
+					</p>
+				</fieldset>
+			</div>
+		</div>	
+		
+		<!-- Begin Login Modal -->
+		<div class="modal fade" id="login" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="myModalLabel"><?php $this->_("ClientLogin.index.login_heading");?></h4>
+					</div>
+					<div class="modal-body">
+						
+							<div class="col-xs-6 col-sm-6 col-md-6 separator social-login-box"> 
+								<a href="#" class="btn btn-block btn-social btn-facebook" role="button" disabled ><i class="fa fa-facebook"></i> Log in using Facebook</a>								
+								<a href="#" class="btn btn-block btn-social btn-twitter" role="button" disabled ><i class="fa fa-twitter"></i> Log in using Twitter</a>								
+								<a href="#" class="btn btn btn-block btn-social btn-default" role="button" disabled ><i class="fa fa-openid"></i> Log in using OpenID</a>								
+								<a href="#" class="btn btn-block btn-social btn-google-plus" role="button" disabled ><i class="fa fa-google"></i> Log in using Google</a>						
+							</div>
+							
+							<div class="col-xs-6 col-sm-6 col-md-6 login-box">
+								<?php
+								$this->Form->create(null , array('id' => "loginform"));
+								if ($this->Html->ifSet($vars->forward_to))
+									$this->Form->fieldHidden("forward_to", $vars->forward_to);
+								?>
+								<div class="input-group">
+									<span class="input-group-addon"><span class="glyphicon glyphicon-user"></span></span>
+									<?php 
+									$this->Form->fieldText("username", $this->Html->ifSet($vars->username), array('id'=>"login_username", 'class'=>"form-control", 'placeholder'=>"Username", 'required'=>"required" ));
+									?>											
+								</div>
+
+								<div class="input-group">
+									<span class="input-group-addon"><span class="glyphicon glyphicon-lock"></span></span>
+									<?php 
+									$this->Form->fieldPassword("password", array('id'=>"login_password", 'class'=>"form-control", 'placeholder'=>"Password", 'required'=>"required"));
+									?>	
+								</div>
+							
+								<div class="checkbox">
+									<label for="login_remember_me">
+										<?php
+										$this->Form->fieldCheckbox("remember_me", "true", $this->Html->ifSet($vars->remember_me, false), array("id"=>"login_remember_me"));
+										$this->_("ClientLogin.index.field_rememberme");
+										?>
+									</label>
+								</div>
+								<button type="submit" class="btn btn-success "><i class="fa fa-sign-in"></i> <?php $this->_("ClientLogin.index.field_loginsubmit");?></button>
+								<button type="reset" class="btn btn-danger "><i class="fa fa-eraser"></i> Reset </button>
+								<?php
+								$this->Form->fieldSubmit("login", "", array('class'=>"hidden", 'hidefocus'=>"true"));
+								?>									
+								<?php
+								$this->Form->end();
+								?>
+							</div>
+						<div class="clearfix"></div>
+					</div>
+					<div class="modal-footer">
+						<a href="#" class="btn btn-warning btn-block" role="button" data-dismiss="modal" data-toggle="modal" data-target="#resetpass" ><i class="fa fa-reply"></i> <?php $this->_("ClientLogin.index.link_resetpassword");?></a>
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<button type="button" class="btn btn-labeled btn-danger"  data-dismiss="modal"><span class="btn-label"><i class="glyphicon glyphicon-remove"></i></span>Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- End Login Modal -->			
+		<!-- Begin ResetPass Modal -->
+		<div class="modal fade" id="resetpass" tabindex="-1" role="dialog" aria-labelledby="myModalLabelresetpass" aria-hidden="true">
+			<div class="modal-dialog modal-sm">
+				<div class="modal-content">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+						<h4 class="modal-title" id="myModalLabelresetpass"><?php $this->_("ClientLogin.index.login_heading");?></h4>
+					</div>
+					<div class="modal-body">
+						<div class="row">
+							<div class="col-xs-12 col-sm-12 col-md-12 login-box">
+								<?php
+								$this->Form->create($this->Html->safe($this->client_uri . "login/reset/")  , array('id' => "resetpass"));
+								?>
+								<fieldset>
+									<div class="form-group">
+										<?php
+										$this->Form->label($this->_("ClientLogin.reset.field_username", true), "login_username");
+										$this->Form->fieldText("username", $this->Html->ifSet($vars->username), array('id'=>"login_username", 'class'=>"form-control", 'placeholder'=>$this->_("ClientLogin.reset.field_username", true)));
+										?>
+									</div>
+									<button type="submit" class="btn btn-success btn-block">
+										<i class="fa fa-arrow-circle-right"></i> <?php $this->_("ClientLogin.reset.field_resetsubmit");?>
+									</button>
+									<?php
+									$this->Form->end();
+									?>									
+									<button type="submit" class="btn btn-default btn-block" data-dismiss="modal" data-toggle="modal" data-target="#login">
+										<i class="fa fa-ban"></i> 
+										<?php $this->_("ClientLogin.reset.link_login");?>
+									</button>
+								</fieldset>
+
+							</div>
+						</div>
+					</div>
+					<div class="modal-footer">
+
+					</div>
+					<div class="col-xs-6 col-sm-6 col-md-6">
+						<button type="button" class="btn btn-labeled btn-danger"  data-dismiss="modal"><span class="btn-label"><i class="glyphicon glyphicon-remove"></i></span>Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- Begin ResetPass Modal -->
+	</div>
+		
+		
+<?php
+$this->Javascript->setInline('
+	$(document).ready(function() {
+		$("#login_username").focus();	
+	});
+');
+?>		

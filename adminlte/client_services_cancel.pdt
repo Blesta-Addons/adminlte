@@ -1,0 +1,83 @@
+	<?php
+	$this->Form->create(null, array('id' => "cancel_service"));
+	?>
+		<div class="modal-header">
+			<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+			<h4 class="global_modal_title"><?php $this->_("ClientServices.cancel.heading_cancel");?></h4>
+		</div>
+		<div class="modal-body">
+			<?php
+			foreach ((array)$this->Html->ifSet($confirm_cancel_messages, array()) as $type => $message) {
+			?>
+				<div class="cancel_message <?php $this->Html->_($type);?>"><?php echo $this->Html->ifSet($message);?></div>
+			<?php
+			}
+			?>
+			<div class="panel-pad">
+				<div class="row">
+					<div class="form-group">
+						<div class="radio">
+							<label>
+								<?php
+								$this->Form->fieldRadio("cancel", "term", ($this->Html->ifSet($vars->cancel) == "term"));
+								
+								// Show language based on whether or not a renew date exists
+								if ($this->Html->ifSet($service->date_renews, false))
+									$this->_("ClientServices.cancel.field_term_date", false, $this->Date->cast($this->Html->ifSet($service->date_renews), "date"));
+								else
+									$this->_("ClientServices.cancel.field_term");
+								?>
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+								<?php
+								$this->Form->fieldRadio("cancel", "now", ($this->Html->ifSet($vars->cancel) == "now"));
+								$this->_("ClientServices.cancel.field_now");
+								?>
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+								<?php
+								$this->Form->fieldRadio("cancel", "", ($this->Html->ifSet($vars->cancel) == ""));
+								$this->_("ClientServices.cancel.field_do_not");
+								?>
+							</label>
+						</div>
+					</div>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientServices.cancel.field_password", true), "password");
+						$this->Form->fieldPassword("password", array('id' => "password", 'class' => "form-control"));
+						?>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer">
+			<?php
+			$this->Form->fieldButton("cancel", $this->_("ClientServices.cancel.field_cancel_cancel", true), array('class' => "btn btn-default", 'data-dismiss' => "modal"));
+			$this->Form->fieldButton("submit", $this->_("ClientServices.cancel.field_cancel_submit", true), array('class' => "btn btn-primary", 'type' => "submit"));
+			?>		
+		</div>
+	<?php
+	$this->Form->end();
+	?>
+	
+<script type="text/javascript">
+	$(document).ready(function() {
+		setCancelMessage();
+		
+		$("#cancel_service input[name='cancel']").change(function() {
+			setCancelMessage();
+		});
+		
+		function setCancelMessage() {
+			$("div.cancel_message").hide();
+			var message_type = $("#cancel_service input[name='cancel']:checked").val();
+			if (message_type)
+				$("div.cancel_message" + "." + message_type).show();
+		}
+	});
+</script>

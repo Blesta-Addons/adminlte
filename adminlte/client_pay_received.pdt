@@ -1,0 +1,23 @@
+
+					<?php
+					echo $this->Html->ifSet($message);
+					
+					$this->WidgetClient->clear();
+					$this->WidgetClient->create($this->_("ClientPay.received.boxtitle_received", true), array('id'=>"client_pay_received"), $this->Html->ifSet($render_section, null));
+					$this->WidgetClient->startBody();
+					?>
+					<div class="col-md-12">
+						<div class="row panel-fix">
+							<?php
+							if ($this->Html->ifSet($trans_data)) {
+							?>
+								<p><?php $this->_("ClientPay.received.statement");?></p>
+							<?php
+							}
+							?>
+						</div>
+					</div>
+					<?php
+					$this->WidgetClient->endBody();
+					$this->WidgetClient->end();
+					?>

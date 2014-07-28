@@ -1,0 +1,65 @@
+					<?php
+					// Create input field for each invoice
+					if ($this->Html->ifSet($invoices, false) && ($num_invoices = count($invoices)) > 0) {
+					?>
+					<div class="pull-right marbot10">
+						<a id="edit_amounts" class="btn btn-default" href="#"><i class="fa fa-edit"></i> <?php $this->_("ClientPay.multipleinvoices.text_edit_amounts");?></a>
+					</div>
+					<div class="clearfix"></div>
+					<div class="table-responsive">
+						<table class="table table-curved table-striped">
+							<thead>
+								<tr>
+									<th><?php $this->Form->fieldCheckbox("invoice_id[]", "all", in_array("all", $this->Html->ifSet($vars->invoice_id, array())));?></td>
+									<th class="edit_amounts" style="display:none;"><?php $this->_("ClientPay.multipleinvoices.text_amount");?></td>
+									<th><?php $this->_("ClientPay.multipleinvoices.text_due");?></td>
+									<th><?php $this->_("ClientPay.multipleinvoices.text_invoice");?></td>
+									<th><?php $this->_("ClientPay.multipleinvoices.text_datedue");?></td>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								// Display each invoice
+								for ($i=0; $i<$num_invoices; $i++) {
+								?>
+								<tr>
+									<td><?php $this->Form->fieldCheckbox("invoice_id[]", $this->Html->ifSet($invoices[$i]->id), in_array($invoices[$i]->id, $this->Html->ifSet($vars->invoice_id, array())));?></td>
+									<td class="edit_amounts" style="display:none;"><?php $this->Form->fieldText("applyamount[" . $this->Html->ifSet($invoices[$i]->id) . "]", $this->Html->ifSet($vars->applyamount[$invoices[$i]->id], $this->CurrencyFormat->format($this->Html->ifSet($vars->applyamount[$invoices[$i]->id], $invoices[$i]->due), $invoices[$i]->currency, array('prefix'=>false,'suffix'=>false,'with_separator'=>false,'code'=>false))), array('id'=>"invoice-" . $this->Html->ifSet($invoices[$i]->id)));?></td>
+									<td><?php echo $this->CurrencyFormat->format($this->Html->_($invoices[$i]->due, true), $this->Html->_($invoices[$i]->currency, true), array('html_code'=>true));?></td>
+									<td><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/view/" . $invoices[$i]->id . "/");?>" target="_blank"><?php $this->Html->_($invoices[$i]->id_code);?></a></td>
+									<td><?php echo $this->Date->cast($this->Html->ifSet($invoices[$i]->date_due));?></td>
+								</tr>
+								<?php
+								}
+								?>
+							</tbody>
+						</table>
+					</div>
+					<?php
+					}
+					else {
+					?>
+					<div class="alert alert-info">
+						<p><?php $this->_("ClientPay.multipleinvoices.no_results");?></p>
+					</div>
+					<?php
+					}
+
+// Show amounts if amounts to pay differ from total
+if (!$this->Html->ifSet($toggle_amounts, true)) {
+	$this->Javascript->setInline("
+		$(document).ready(function() {
+			$('.edit_amounts').toggle();
+		});
+	");
+}
+
+$this->Javascript->setInline("
+$(document).ready(function() {
+	$('#edit_amounts').click(function() {
+		$('.edit_amounts').toggle();
+		return false;
+	});
+});
+");
+?>

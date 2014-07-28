@@ -1,0 +1,46 @@
+					<?php
+					// Display custom client fields
+					if (!empty($custom_fields)) {
+						foreach ($custom_fields as $field) {
+							// Only show the field if it is visible to clients
+							if ($this->Html->ifSet($field->show_client) == "1") {
+								$div_class = ($field->type == "checkbox" ? "checkbox" : "form-group");
+						?>
+					<div class="<?php $this->Html->_($div_class);?>">
+							<?php
+							// Set a unique field ID
+							$field_id = $this->Html->ifSet($custom_field_prefix) . $this->Html->ifSet($field->id);
+							
+							// Show each custom field
+							$disabled = ($this->Html->ifSet($field->read_only) == "1" ? array('disabled' => "disabled") : array());
+							switch($field->type) {
+								case "text":
+									$this->Form->label($this->Html->ifSet($field->real_name), $field_id);
+									$this->Form->fieldText($field_id, $this->Html->ifSet($vars->{$field_id}), array_merge(array('id'=>$field_id, 'class'=>"form-control"), $disabled));
+									break;
+								case "select":
+									$this->Form->label($this->Html->ifSet($field->real_name), $field_id);
+									$this->Form->fieldSelect($field_id, $this->Html->ifSet($field->values, array()), $this->Html->ifSet($vars->{$field_id}), array_merge(array('id'=>$field_id, 'class'=>"form-control"), $disabled));
+									break;
+								case "textarea":
+									$this->Form->label($this->Html->ifSet($field->real_name), $field_id);
+									$this->Form->fieldTextarea($field_id, $this->Html->ifSet($vars->{$field_id}), array_merge(array('id'=>$field_id, 'class'=>"form-control"), $disabled));
+									break;
+								case "checkbox":
+							?>
+							<label>
+								<?php
+								$this->Form->fieldCheckbox($field_id, $this->Html->ifSet($field->values), $this->Html->ifSet($vars->{$field_id}), array_merge(array('id'=>$field_id), $disabled));
+								$this->Html->_($field->real_name);
+								?>
+							</label>
+							<?php
+									break;
+							}
+						?>
+					</div>
+						<?php
+							}
+						}
+					}
+					?>

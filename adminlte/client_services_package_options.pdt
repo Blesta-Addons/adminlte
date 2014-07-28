@@ -1,0 +1,94 @@
+			<?php
+			if (($this->Html->ifSet($fields) && !empty($fields)) || $this->Html->ifSet($html) != "") {
+				foreach ($this->Html->ifSet($fields, array()) as $field) {
+					if ($field->type != "fieldHidden") {
+					?>
+					<div class="form-group">
+					<?php
+					}
+	
+					// Draw the primary label/field
+					call_user_func_array(array($this->Form, $field->type), $field->params);
+					
+					// Draw each form field associated with this label
+					foreach ($field->fields as $input) {
+						// Display tooltip
+						if ($input->type == "tooltip") {
+						?>
+						<a href="#" data-toggle="tooltip" title="<?php $this->Html->_($tooltip->params['message']);?>"><i class="fa fa-question-circle text-primary"></i></a>
+						<?php
+						}
+						
+						// Draw the form field's secondary label if checkbox or radio item
+						if (($input->type == "fieldCheckbox" || $input->type == "fieldRadio") && isset($input->label)) {
+							$class = ($input->type == "fieldRadio" ? "radio" : "checkbox");
+						?>
+						<div class="<?php $this->Html->_($class);?>">
+							<label<?php echo $this->Html->buildAttributes($input->label->params);?>>
+								<?php
+								call_user_func_array(array($this->Form, $input->type), $input->params);
+								$this->Html->_($input->label->params['name']);
+								?>
+							</label>
+						</div>
+						<?php
+						}
+						else {
+							// Set form field class
+							if (isset($input->params['attributes']['class'])) {
+								if (is_array($input->params['attributes']['class']))
+									$input->params['attributes']['class'][] = "form-control";
+								else
+									$input->params['attributes']['class'] .= " form-control";
+							}
+							else
+								$input->params['attributes']['class'] = "form-control";
+							
+							// Draw the form field
+							call_user_func_array(array($this->Form, $input->type), $input->params);
+							
+							// Show form field's secondary label
+							if (isset($input->label))
+								call_user_func_array(array($this->Form, "label"), $input->label->params);
+						}
+					}
+					
+					if ($field->type != "fieldHidden") {
+					?>
+					</div>
+				<?php
+					}
+				}
+				?>
+			<?php echo $this->Html->ifSet($html);?>
+			<div class="clearfix"></div>
+			<?php
+			}
+			?>
+<script type="text/javascript">
+	$(document).ready(function() {
+
+		$("input[data-type='quantity']").each(function() {
+			var input = $(this);
+			if (input.attr("data-min") != "" && input.attr("data-max") != "") {
+				var min = parseInt(input.attr("data-min"));
+				var max = parseInt(input.attr("data-max"));
+				var step = parseInt(input.attr("data-step") == "" ? 1 : input.attr("data-step"));
+				var value = parseInt(input.val());
+				if (value < min)
+					value = min;
+				if (value > max)
+					value = max;
+				
+				$(input).slider({
+					value: value,
+					min: min,
+					max: max,
+					step: step,
+					orientation: 'horizontal'
+				});
+				
+			}
+		});
+	});
+</script>

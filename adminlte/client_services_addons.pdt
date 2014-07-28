@@ -1,0 +1,84 @@
+		<div class="col-md-3">
+			<?php echo $this->Html->ifSet($tabs);?>
+		</div>
+		<div class="col-md-9">
+			<?php echo $this->Html->ifSet($message);?>
+			
+			<?php
+			$this->WidgetClient->clear();
+			
+			if ($this->Html->ifSet($client_can_create_addons)) {
+				$link_buttons = array(
+					array('name'=>$this->_("ClientServices.addons.create_addon", true), 'attributes'=>array("href"=>$this->Html->safe($this->base_uri . "services/addaddon/" . $this->Html->ifSet($service->id) . "/")))
+				);
+				$this->WidgetClient->setLinkButtons($link_buttons);
+			}
+			
+			$this->WidgetClient->create($this->_("ClientServices.addons.boxtitle_addons", true, $this->Html->ifSet($package->name), $this->Html->ifSet($service->name)), array('id'=>"client_addons"), $this->Html->ifSet($render_section, null));
+			$this->WidgetClient->startBody();
+			
+			if ($this->Html->ifSet($services, false) && (($num_services = count($services)) > 0)) {
+			?>
+			<div class="table-responsive">
+				<table class="table table-curved table-striped" id="addons">
+					<thead>
+						<tr>
+							<th><?php $this->_("ClientServices.index.heading_package");?></th>
+							<th><?php $this->_("ClientServices.index.heading_label");?></th>
+							<th><?php $this->_("ClientServices.index.heading_term");?></th>
+							<th><?php $this->_("ClientServices.index.heading_status");?></th>
+							<th><?php $this->_("ClientServices.index.heading_options");?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+						for ($i=0; $i<$num_services; $i++) {
+						?>
+						<tr>
+							<td><?php $this->Html->_($services[$i]->package->name);?></td>
+							<td><?php $this->Html->_($services[$i]->name);?></td>
+							<td>
+								<?php
+								if ($this->Html->ifSet($services[$i]->package_pricing->period) == "onetime")
+									$this->Html->_($periods[$services[$i]->package_pricing->period]);
+								else {
+									$term = $this->Html->_($services[$i]->package_pricing->term, true);
+									echo $this->Html->safe($this->Html->concat(" ", $term, ($term == 1 ? $this->Html->ifSet($periods[$services[$i]->package_pricing->period]) : $this->Html->ifSet($periods[$services[$i]->package_pricing->period . "_plural"]))));
+								}
+								?>
+							</td>
+							<td><?php $this->Html->_($statuses[$this->Html->ifSet($services[$i]->status)]);?></td>
+							<td>
+								<?php
+								if ($services[$i]->status != "canceled") {
+								?>
+								<div class="btn-group">
+									<a href="<?php echo $this->base_uri . "services/manage/" . $this->Html->_($services[$i]->id, true) . "/";?>" class="btn btn-xs btn-default">
+										<i class="fa fa-file-text-o fa-fw"></i> <?php $this->_("ClientServices.index.option_manage");?>
+									</a>
+								</div>
+								<?php
+								}
+								?>
+							</td>
+						</tr>
+						<?php
+						}
+						?>
+					</tbody>
+				</table>
+			</div>
+			<?php
+			}
+			else {
+			?>
+			<div class="alert alert-info">
+				<p><?php $this->_("ClientServices.addons.no_results");?></p>
+			</div>
+			<?php
+			}
+			
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>

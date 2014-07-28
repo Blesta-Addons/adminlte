@@ -1,0 +1,7 @@
+
+
+	<div>
+		<h3><?php $this->_("404.heading_error");?></h3>
+		
+		<p><?php $this->_("404.text_error");?></p>
+	</div>

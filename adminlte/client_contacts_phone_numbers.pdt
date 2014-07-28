@@ -1,0 +1,94 @@
+
+			<div class="row panel-fix">
+				<div class="col-md-12">
+					<h4><?php $this->_("ClientContacts.phone_numbers.heading_phone");?></h4>
+					<div class="table-responsive">
+						<table class="table table-curved table-striped">
+							<thead>
+								<tr>
+									<th><?php $this->_("ClientContacts.phone_numbers.field_phonetype");?></th>
+									<th><?php $this->_("ClientContacts.phone_numbers.field_phonelocation");?></th>
+									<th><?php $this->_("ClientContacts.phone_numbers.field_phonenumber");?></th>
+									<th><?php $this->_("ClientContacts.phone_numbers.field_phoneoptions");?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								$num_numbers = count($this->Html->ifSet($numbers['type'], array()));
+								for ($i=0; $i<max(1, $num_numbers); $i++) {
+								?>
+								<tr class="phone_row">
+									<td>
+										<?php $this->Form->fieldHidden("numbers[id][]", $this->Html->ifSet($numbers['id'][$i]), array('class'=>'phone_id'));?>
+										<div class="form-group">
+											<?php $this->Form->fieldSelect("numbers[type][]", $this->Html->ifSet($number_types), $this->Html->ifSet($numbers['type'][$i]), array('class'=>"form-control input-sm"));?>
+										</div>
+									</td>
+									<td>
+										<div class="form-group">
+											<?php $this->Form->fieldSelect("numbers[location][]", $this->Html->ifSet($number_locations), $this->Html->ifSet($numbers['location'][$i]), array('class'=>"form-control input-sm"));?>
+										</div>
+									</td>
+									<td>
+										<?php $this->Form->fieldText("numbers[number][]", $this->Html->ifSet($numbers['number'][$i]), array('type'=>"tel", 'class'=>"form-control input-sm", 'placeholder'=>$this->_("ClientContacts.phone_numbers.field_phonenumber", true)));?>
+									</td>
+									<td>
+										<div class="btn-group">
+											<button type="button" class="btn btn-sm btn-default phone_row_add"><i class="fa fa-plus fa-fw"></i> <?php $this->_("ClientContacts.phone_numbers.categorylink_number");?></button>
+											<button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown">
+												<span class="caret"></span>
+												<span class="sr-only"><?php $this->_("AppController.sreader.dropdown");?></span>
+											</button>
+											<ul class="dropdown-menu" role="menu">
+												<li><a href="#" class="phone_row_remove"><i class="fa fa-ban fa-fw"></i> <?php $this->_("ClientContacts.phone_numbers.text_remove");?></a></li>
+											</ul>
+										</div>	
+									</td>
+								</tr>
+								<?php
+								}
+								
+								// Reset any numbers that should be deleted
+								foreach ($this->Html->ifSet($numbers['id'], array()) as $index=>$id) {
+									if (!isset($numbers['type'][$index]))
+										$this->Form->fieldHidden("numbers[id][]", $this->Html->ifSet($id), array('class'=>'phone_id'));
+								}
+								?>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+			
+<?php
+$this->Javascript->setInline("
+$(document).ready(function() {
+	$('.phone_row_add').click(function() {
+		var fields = $(this).parents('tr').clone(true);
+		// Remove input text/hidden and textarea data
+		fields.find('input:text,input:hidden,textarea').val('');
+		// Remove checkbox/radio data
+		fields.find('input:checkbox,input:radio').removeAttr('checked');
+		// Unselect options
+		fields.find('option:selected').removeAttr('selected');
+
+		var last_tr = $(this).parents('tr').last();
+		$(last_tr).after(fields);
+		// Empty the phone ID
+		fields.find('.phone_id').attr('value', '');
+
+		return false;
+	});
+	
+	$('.phone_row_remove').click(function() {
+		if ($('tr.phone_row').length > 1) {
+			// Keep ID, remove everything else
+			var tr = $(this).parents('tr');
+			$(tr).parents('table').after($(tr).find('input.phone_id'));
+			$(tr).remove();
+		}
+		return false;
+	});
+});
+");
+?>

@@ -1,0 +1,49 @@
+		<div class="col-md-3">
+			<?php echo $this->Html->ifSet($tabs);?>
+		</div>
+		<div class="col-md-9">
+			<?php echo $this->Html->ifSet($message);?>
+			
+			<?php
+			$this->WidgetClient->clear();
+			$this->WidgetClient->create($this->_("ClientServices.addaddon.boxtitle_addons", true, $this->Html->ifSet($package->name), $this->Html->ifSet($service->name)), array('id'=>"client_add_addon"), $this->Html->ifSet($render_section, null));
+			$this->WidgetClient->startBody();
+			$this->Form->create(null, array('id'=>"change_addon", 'method'=>"GET"));
+			$this->Form->fieldHidden("package_group_id", "", array('id' => "package_group_id"));
+			$this->Form->fieldHidden("pricing_id", "", array('id' => "pricing_id"));
+			?>
+			<h4><?php $this->_("ClientServices.addaddon.header_add", false, $this->Html->ifSet($module->name));?></h4>
+			<div class="form-group">
+				<?php
+				$this->Form->fieldSelect("addon", $this->Html->ifSet($addons), $this->Html->ifSet($vars->addon), array('id' => "addons", 'class' => "form-control"));
+				?>
+			</div>
+			<?php
+			$this->Form->end();
+			$this->Form->create();
+			?>
+			<hr />
+			<div id="addon_options">
+				<?php echo $this->Html->ifSet($addon_options);?>
+			</div>
+			<div class="pull-right">
+				<button type="submit" class="btn btn-default btn-sm"><i class="fa fa-plus-circle"></i> <?php $this->_("ClientServices.addaddon.submit_add");?></button>
+			</div>
+			<?php
+			$this->Form->end();
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>
+<?php
+$this->Javascript->setInline("
+	$(document).ready(function() {
+		$('#addons').change(function() {
+			var addon_fields = $(this).val().split('_');
+			$('#package_group_id').val((addon_fields[0].length > 0 ? addon_fields[0] : ''));
+			$('#pricing_id').val((addon_fields[1].length > 0 ? addon_fields[1] : ''));
+			$('#change_addon').submit();
+		});
+	});
+");
+?>

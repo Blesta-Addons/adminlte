@@ -1,0 +1,43 @@
+
+			<div class="row panel-fix">
+				<div class="col-md-12">
+					<h4><?php $this->_("ClientAccounts.cc_info.heading_cc");?></h4>
+				</div>
+				<div class="col-md-6">
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientAccounts.cc_info.field_number", true), "number");
+						$this->Form->fieldText("number", isset($vars->last4) ? str_pad($vars->last4, 16, "*", STR_PAD_LEFT) : $this->Html->ifSet($vars->number), array('id'=>"number", 'class'=>"form-control", 'placeholder'=>$this->_("ClientAccounts.cc_info.field_number", true)));
+						?>
+					</div>
+					<div class="form-group">
+						<?php $this->Form->label($this->_("ClientAccounts.cc_info.field_security", true), "security_code");?>
+						<a href="#" data-toggle="tooltip" title="<?php $this->_("ClientAccounts.cc_info.tooltip_code");?>"><i class="fa fa-question-circle text-primary"></i></a>
+						<?php $this->Form->fieldText("security_code", $this->Html->ifSet($vars->security_code), array('id'=>"security_code", 'class'=>"form-control", 'placeholder'=>$this->_("ClientAccounts.cc_info.field_security", true)));?>
+					</div>
+					<div class="form-group">
+						<?php $this->Form->label($this->_("ClientAccounts.cc_info.field_expiration", true), "expiration");?>
+						<div class="form-inline">
+							<?php
+							$this->Form->fieldSelect("expiration_month", $this->Html->ifSet($expiration['months']), $this->Html->ifSet($vars->expiration_month), array('id'=>"expiration_month", 'class'=>"form-control input-sm"));
+							$this->Form->fieldSelect("expiration_year", $this->Html->ifSet($expiration['years']), $this->Html->ifSet($vars->expiration_year), array('id'=>"expiration_year", 'class'=>"form-control input-sm"));
+							?>
+						</div>
+					</div>
+					<?php
+					if (isset($save_account) && $save_account) {
+					?>
+					<div class="checkbox">
+						<label>
+						<?php
+						$this->Form->fieldCheckbox("save_details", "true", isset($vars->save_details));
+						$this->_("ClientAccounts.cc_info.field_savedetails");
+						?>
+						</label>
+					</div>
+					<?php
+					}
+					?>
+				</div>
+			</div>
+			

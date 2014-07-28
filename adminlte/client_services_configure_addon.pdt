@@ -1,0 +1,82 @@
+		
+			<?php
+			if (($this->Html->ifSet($fields) && !empty($fields)) || $this->Html->ifSet($html) != "") {
+			?>
+			<h4><?php $this->_("ClientServices.configure_addon.header_options", false, $this->Html->ifSet($module_name));?></h4>
+			<div id="<?php echo $this->Html->safe($this->Html->concat("_", $this->Html->ifSet($module->class), $this->Html->ifSet($module->id)));?>">
+				<?php
+				foreach ($this->Html->ifSet($fields, array()) as $field) {
+                    // Set any hidden fields
+                    foreach ($field->fields as $input) {
+                        if ($input->type == "fieldHidden") {
+                            call_user_func_array(array($this->Form, $input->type), $input->params);
+                            continue 2;
+                        }
+                    }
+
+					if ($field->type != "fieldHidden") {
+					?>
+					<div class="form-group">
+					<?php
+					}
+	
+					// Draw the primary label/field
+					call_user_func_array(array($this->Form, $field->type), $field->params);
+					
+					// Draw each form field associated with this label
+					foreach ($field->fields as $input) {
+						// Display tooltip
+						if ($input->type == "tooltip") {
+						?>
+						<a href="#" data-toggle="tooltip" title="<?php $this->Html->_($input->params['message']);?>"><i class="fa fa-question-circle text-primary"></i></a>
+						<?php
+						}
+						
+						// Draw the form field's secondary label if checkbox or radio item
+						if (($input->type == "fieldCheckbox" || $input->type == "fieldRadio") && isset($input->label)) {
+							$class = ($input->type == "fieldRadio" ? "radio" : "checkbox");
+						?>
+						<div class="<?php $this->Html->_($class);?>">
+							<label<?php echo $this->Html->buildAttributes($input->label->params);?>>
+								<?php
+								call_user_func_array(array($this->Form, $input->type), $input->params);
+								$this->Html->_($input->label->params['name']);
+								?>
+							</label>
+						</div>
+						<?php
+						}
+						else {
+							// Set form field class
+							if (isset($input->params['attributes']['class'])) {
+								if (is_array($input->params['attributes']['class']))
+									$input->params['attributes']['class'][] = "form-control";
+								else
+									$input->params['attributes']['class'] .= " form-control";
+							}
+							else
+								$input->params['attributes']['class'] = "form-control";
+							
+							// Draw the form field
+							call_user_func_array(array($this->Form, $input->type), $input->params);
+						}
+					}
+					
+					if ($field->type != "fieldHidden") {
+					?>
+					</div>
+				<?php
+					}
+				}
+				?>
+				<?php echo $this->Html->ifSet($html);?>
+				<div class="clearfix"></div>
+			</div>
+			<?php
+			}
+			?>
+			
+			<div class="package_options">
+				<?php echo $this->Html->ifSet($package_options);?>
+			</div>
+			

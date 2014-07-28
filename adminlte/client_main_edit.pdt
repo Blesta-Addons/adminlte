@@ -1,0 +1,138 @@
+		<div class="col-md-12">
+			<?php
+			echo $this->Html->ifSet($message);
+			
+			$this->WidgetClient->clear();
+			$this->WidgetClient->create($this->_("ClientMain.edit.boxtitle_edit", true));
+			$this->WidgetClient->startBody();
+			
+			$this->Form->create();
+			
+			// Set contact info and phone number partials
+			echo $this->Html->ifSet($contact_info);
+			?>
+			<hr />
+			<?php echo $this->Html->ifSet($phone_numbers);?>
+			<hr />
+			
+			<div class="row panel-fix">
+				<div class="col-md-12">
+					<h4><?php $this->_("ClientMain.edit.heading_billing");?></h4>
+					
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientMain.edit.field_taxid", true), "tax_id");
+						$this->Form->fieldText("tax_id", $this->Html->ifSet($vars->settings['tax_id']), array('id'=>"tax_id", 'class'=>"form-control", 'placeholder'=>$this->_("ClientMain.edit.field_taxid", true)));
+						?>
+					</div>
+					<?php
+					// Show currency if enabled
+					if ($this->Html->ifSet($enabled_fields['default_currency'], false)) {
+					?>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientMain.edit.field_default_currency", true), "default_currency");
+						$this->Form->fieldSelect("default_currency", $this->Html->ifSet($currencies), $this->Html->ifSet($vars->settings['default_currency']), array('id'=>"default_currency", 'class'=>"form-control"));
+						?>
+					</div>
+					<?php
+					}
+					?>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientMain.edit.field_invoiceaddress", true), "inv_address_to");
+						$this->Form->fieldSelect("inv_address_to", $this->Html->ifSet($contacts), $this->Html->ifSet($vars->settings['inv_address_to']), array('id'=>"inv_address_to", 'class'=>"form-control"));
+						?>
+					</div>
+				</div>
+			</div>
+			<?php
+			// Show additional settings, if any
+			if ($this->Html->ifSet($show_additional_settings, false)) {
+			?>
+			<hr />
+			<div class="row panel-fix">
+				<div class="col-md-12">
+					<h4><?php $this->_("ClientMain.edit.heading_settings");?></h4>
+					
+					<?php
+					// Show language if enabled
+					if ($this->Html->ifSet($enabled_fields['language'], false)) {
+					?>
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientMain.edit.field_language", true), "language");
+						$this->Form->fieldSelect("language", $this->Html->ifSet($languages), $this->Html->ifSet($vars->settings['language']), array('id'=>"language", 'class'=>"form-control"));
+						?>
+					</div>
+					<?php
+					}
+                    // Set custom fields partial
+					echo $this->Html->ifSet($custom_fields);
+					?>
+				</div>
+			</div>
+			<?php
+			}
+			?>
+			<hr />
+			<div id="change_password" class="row panel-fix panel-group">
+				<div class="password_link col-md-12">
+					<h4>
+						<a data-toggle="collapse" data-parent="#change_password" href="#change_password_fields"><?php $this->_("ClientMain.edit.link_change_password");?></a>
+					</h4>
+				</div>
+				
+				<div id="change_password_fields" class="collapse">
+					<div class="new_password col-md-12">
+						<div class="form-group">
+							<?php $this->Form->label($this->_("ClientMain.edit.field_username", true), "username");?>
+							<p><?php $this->Html->_($username);?></p>
+						</div>
+						<div class="form-group">
+							<?php
+							$this->Form->label($this->_("ClientMain.edit.field_current_password", true), "current_password");
+							$this->Form->fieldPassword("current_password", array('id'=>"current_password", 'class'=>"form-control"));
+							?>
+						</div>
+						<div class="form-group">
+							<?php
+							$this->Form->label($this->_("ClientMain.edit.field_new_password", true), "new_password");
+							$this->Form->fieldPassword("new_password", array('id'=>"new_password", 'class'=>"form-control"));
+							?>
+						</div>
+						<div class="form-group">
+							<?php
+							$this->Form->label($this->_("ClientMain.edit.field_confirm_password", true), "confirm_password");
+							$this->Form->fieldPassword("confirm_password", array('id'=>"confirm_password", 'class'=>"form-control"));
+							?>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn btn-default pull-right">
+				<i class="fa fa-edit"></i> <?php $this->_("ClientMain.edit.field_editsubmit");?>
+			</button>
+			
+			<?php
+			$this->Form->end();
+			
+			$this->Javascript->setInline('
+				$(document).ready(function() {
+				/*
+					$("#change_password .new_password").hide();
+					
+					$("#change_password .password_link").click(function() {
+						$(this).hide();
+						$("#change_password .new_password").show();
+						return false;
+					});
+				*/
+				});
+			');
+			
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>

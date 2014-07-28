@@ -1,0 +1,55 @@
+
+		<div class="col-md-12">
+			<?php
+			echo $this->Html->ifSet($message);
+			
+			$this->WidgetClient->clear();
+			$this->WidgetClient->create($this->_("ClientAccounts.add.boxtitle_create", true));
+			$this->WidgetClient->startBody();
+			
+			$this->Form->create();
+			
+			if ($this->Html->ifSet($step, 1) == 1) {
+			?>
+			<h4><?php $this->_("ClientAccounts.add.heading_account_type");?></h4>
+			<div class="radio">
+				<label>
+					<?php
+					$this->Form->fieldRadio("payment_account_type", "cc", ($this->Html->ifSet($vars->account_type, "cc") == "cc"));
+					$this->_("ClientAccounts.add.field_cc_type");
+					?>
+				</label>
+			</div>
+			<div class="radio">
+				<label>
+					<?php
+					$this->Form->fieldRadio("payment_account_type", "ach", ($this->Html->ifSet($vars->account_type) == "ach"));
+					$this->_("ClientAccounts.add.field_ach_type")
+					?>
+				</label>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">
+				<i class="fa fa-arrow-circle-right"></i> <?php $this->_("ClientAccounts.add.field_nextsubmit");?>
+			</button>
+			<?php
+			}
+			else {
+				// Set the account type
+				$this->Form->fieldHidden("account_type", $this->Html->ifSet($vars->account_type), array('id'=>"account_type"));
+			
+				// Set partials
+				echo $this->Html->ifSet($contact_info);
+			?>
+			<hr />
+			<?php echo $this->Html->ifSet($account_info);?>
+			
+			<button type="submit" class="btn btn-default pull-right">
+				<i class="fa fa-plus-circle"></i> <?php $this->_("ClientAccounts.add.field_accountsubmit");?>
+			</button>
+			<?php
+			}
+			$this->Form->end();
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>

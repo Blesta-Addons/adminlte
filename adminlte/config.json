@@ -1,0 +1,14 @@
+{
+	"version": "1.0.0",
+	"name": "Admin LTE",
+	"description": "AdminLTE Built on Bootstrap 3.1.",
+	"authors": [
+		{
+			"name": "Naja7Host Sarl",
+			"url": "http://www.naja7host.com"
+		}
+	],
+	"require": {
+		"blesta": ">=3.2.0"
+	}
+}

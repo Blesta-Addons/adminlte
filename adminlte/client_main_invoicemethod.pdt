@@ -1,0 +1,49 @@
+		
+		<div class="col-md-12">
+			<?php
+			echo $this->Html->ifSet($message);
+			
+			$this->WidgetClient->clear();
+			$this->WidgetClient->create($this->_("ClientMain.invoicemethod.boxtitle_inv_method", true));
+			$this->WidgetClient->startBody();
+			
+			$this->Form->create();
+			// Set hidden field to allow submit when invoice methods are disabled
+			$this->Form->fieldHidden("send", "1");
+			?>
+			<p><?php $this->_("ClientMain.invoicemethod.text_invoice_method");?></p>
+			<?php
+			if ($this->Html->ifSet($delivery_methods)) {
+				// Set whether the fields are editable
+				$disabled = array();
+				if (!$this->Html->ifSet($enabled, false))
+					$disabled = array('disabled'=>"disabled");
+				
+				foreach ($delivery_methods as $method => $name) {
+				?>
+			<div class="radio">
+				<label>
+					<?php
+					$this->Form->fieldRadio("inv_method", $method, ($this->Html->ifSet($vars->inv_method) == $method), $disabled);
+					$this->Html->_($name);
+					
+					$tooltip = $this->_("ClientMain.!tooltip.invoice_method_" . $method, true);
+					if (!empty($tooltip)) {
+					?>
+					<a href="#" data-toggle="tooltip" title="<?php $this->Html->_($tooltip);?>"><i class="fa fa-question-circle text-primary"></i></a>
+					<?php
+					}
+					?>
+				</label>
+			</div>
+				<?php
+				}
+			}
+			?>
+			<button type="submit" class="btn btn-default pull-right"><i class="fa fa-plus-circle"></i> <?php $this->_("Clientmain.invoicemethod.field_methodsubmit");?></button>
+			<?php
+			$this->Form->end();
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>

@@ -1,0 +1,26 @@
+
+		<div class="col-md-12">
+			<?php
+			echo $this->Html->ifSet($message);
+			
+			$this->WidgetClient->clear();
+			$this->WidgetClient->create($this->_("ClientAccounts.editcc.boxtitle_editcc", true));
+			$this->WidgetClient->startBody();
+			
+			$this->Form->create();
+	
+			// Set partials
+			echo $this->Html->ifSet($contact_info);
+			?>
+			<hr />
+			<?php echo $this->Html->ifSet($cc_info);?>
+			
+			<button type="submit" class="btn btn-default pull-right">
+				<i class="fa fa-edit"></i> <?php $this->_("ClientAccounts.editcc.field_accountsubmit");?>
+			</button>
+			<?php
+			$this->Form->end();
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>

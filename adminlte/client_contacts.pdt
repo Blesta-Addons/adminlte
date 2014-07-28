@@ -1,0 +1,98 @@
+					<div class="col-md-12">
+						<?php echo $this->Html->ifSet($message);?>
+						
+						<?php
+						$link_buttons = array(
+							array('name'=>$this->_("ClientContacts.index.create_contact", true), 'attributes'=>array("href"=>$this->base_uri . "contacts/add/"))
+						);
+						
+						$this->WidgetClient->clear();
+						$this->WidgetClient->setLinkButtons($link_buttons);
+						$this->WidgetClient->create($this->_("ClientContacts.index.boxtitle_contacts", true), array('id'=>"client_contacts"), $this->Html->ifSet($render_section, null));
+						$this->WidgetClient->startBody();
+						
+						if ($this->Html->ifSet($contacts, false) && (($num_contacts = count($contacts)) > 0)) {
+						?>
+						<div class="table-responsive">
+							<table class="table table-curved table-striped" id="contacts">
+								<thead>
+									<tr>
+										<th><a href="<?php echo $this->Html->safe($this->base_uri . "contacts/index/?sort=first_name&order=" . ($sort == "first_name" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "first_name" ? " " . $order : "");?>"><?php $this->_("ClientContacts.index.heading_name");?></a></th>
+										<th><a href="<?php echo $this->Html->safe($this->base_uri . "contacts/index/?sort=email&order=" . ($sort == "email" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "email" ? " " . $order : "");?>"><?php $this->_("ClientContacts.index.heading_email");?></a></th>
+										<th><?php $this->_("ClientContacts.index.heading_type");?></th>
+										<th><?php $this->_("ClientContacts.index.heading_options");?></th>
+									</tr>
+								</thead>
+								<tbody>
+									<?php
+									// Loop through all contacts
+									for ($i=0; $i<$num_contacts; $i++) {
+									?>
+									<tr>
+										<td><?php echo $this->Html->concat(" ", $this->Html->_($contacts[$i]->first_name, true), $this->Html->_($contacts[$i]->last_name, true));?></td>
+										<td><?php $this->Html->_($contacts[$i]->email);?></td>
+										<td>
+										<?php
+										// Set the contact type
+										$contact_type = $this->Html->ifSet($contact_types[$contacts[$i]->contact_type]);
+										if ($this->Html->ifSet($contacts[$i]->contact_type) == "other")
+											$contact_type = $this->Html->ifSet($contact_types[$contacts[$i]->contact_type_id]);
+										$this->Html->_($contact_type);
+										?>
+										</td>
+										<td>
+											<?php
+											$this->Form->create($this->base_uri . "contacts/delete/");
+											$this->Form->fieldHidden("id", $this->Html->ifSet($contacts[$i]->id));
+											?>
+											<div class="btn-group">
+												<a href="<?php echo $this->Html->safe($this->base_uri . "contacts/edit/" . $this->Html->_($contacts[$i]->id, true) . "/");?>"  class="btn btn-xs btn-default">
+													<i class="fa fa-edit fa-fw"></i> <?php $this->_("ClientContacts.index.option_edit");?>
+												</a>
+												<button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li>
+														<a href="<?php echo $this->Html->safe($this->base_uri . "contacts/delete/" . $this->Html->_($contacts[$i]->id, true) . "/");?>" rel="<?php echo $this->Html->safe($this->_("ClientContacts.index.confirm_delete", true));?>">
+															<i class="fa fa-ban fa-fw"></i> <?php $this->_("ClientContacts.index.option_delete");?>
+														</a>
+													</li>
+												</ul>
+											</div>
+											<?php
+											$this->Form->end();
+											?>
+										</td>
+									</tr>
+									<?php
+									}
+									?>
+								</tbody>
+							</table>
+						</div>
+						<?php
+						}
+						else {
+						?>
+						<div class="alert alert-info">
+							<p><?php $this->_("ClientContacts.index.no_results");?></p>
+						</div>
+						<?php
+						}
+						
+						$this->WidgetClient->endBody();
+						$this->WidgetClient->end();
+						?>
+					</div>
+<?php
+$this->Javascript->setInline("
+	$(document).ready(function() {
+		// Handle confirmation on delete action
+		$('#client_contacts a[rel]').blestaModalConfirm({
+			base_url: '" . $this->base_uri . "',
+			submit: true
+		});
+	});
+");
+?>

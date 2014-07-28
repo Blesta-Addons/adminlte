@@ -1,0 +1,118 @@
+
+					<div class="col-md-12">
+						<?php
+						echo $this->Html->ifSet($message);
+						
+						$link_buttons = array(
+							array('name'=>$this->_("ClientAccounts.index.create_account", true), 'attributes'=>array('href'=>$this->base_uri . "accounts/add/"))
+						);
+						
+						$this->WidgetClient->clear();
+						$this->WidgetClient->setLinkButtons($link_buttons);
+						$this->WidgetClient->create($this->_("ClientAccounts.index.boxtitle_accounts", true), array('id'=>"client_accounts"), $this->Html->ifSet($render_section, null));
+						$this->WidgetClient->startBody();
+						
+						$this->Form->create();
+						
+						if ($this->Html->ifSet($accounts, false) && (($num_accounts = count($accounts)) > 0)) {
+						?>
+						<div class="table-responsive">
+							<table class="table table-curved table-striped marbot10" id="contacts">
+								<thead>
+									<th><?php $this->Form->fieldRadio("account_id", "none", ($this->Html->_($vars->account_id, true) == "none"));?></th>
+									<th><?php $this->_("ClientAccounts.index.heading_name");?></th>
+									<th><?php $this->_("ClientAccounts.index.heading_type");?></th>
+									<th><?php $this->_("ClientAccounts.index.heading_last4");?></th>
+									<th><?php $this->_("ClientAccounts.index.heading_options");?></th>
+								</thead>
+								<tbody>
+									<?php
+									// Save the account type of the account that is checked
+									$account_type = "cc";
+									
+									// Loop through all accounts
+									for ($i=0; $i<$num_accounts; $i++) {
+									?>
+									<tr<?php echo $this->Html->concat(" ", ($i%2 == 1) ? " class=\"odd_row\"" : "", "");?>>
+										<?php
+										// Radio is checked if both account ID and account type match
+										$radio_checked = false;
+										
+										if (($this->Html->_($vars->account_id, true) == $this->Html->ifSet($accounts[$i]->id)) &&
+											($this->Html->_($vars->type, true) == $this->Html->ifSet($accounts[$i]->account_type))) {
+											$radio_checked = true;
+											$account_type = $this->Html->ifSet($accounts[$i]->account_type);
+										}
+										?>
+										<td>
+											<?php
+											$this->Form->fieldRadio("account_id", $this->Html->ifSet($accounts[$i]->id), $radio_checked);
+											$this->Form->fieldHidden("account_type", $this->Html->ifSet($accounts[$i]->account_type));
+											?>
+										</td>
+										<td><?php echo $this->Html->concat(" ", $this->Html->_($accounts[$i]->first_name, true), $this->Html->_($accounts[$i]->last_name, true));?></td>
+										<td><?php $this->_("ClientAccounts.index.type_" . $accounts[$i]->account_type, false, $account_types[$accounts[$i]->account_type], $this->Html->ifSet($ach_types[$accounts[$i]->type], $this->Html->ifSet($cc_types[$accounts[$i]->type])));?></td>
+										<td><?php $this->Html->_($accounts[$i]->last4);?></td>
+										<td>
+											<div class="btn-group">
+												<a href="<?php echo $this->Html->safe($this->base_uri . "accounts/edit" . ($this->Html->ifSet($accounts[$i]->account_type) == "cc" ? "cc" : "ach") . "/" . $this->Html->_($accounts[$i]->id, true) . "/");?>"  class="btn btn-xs btn-default">
+													<i class="fa fa-edit fa-fw"></i> <?php $this->_("ClientAccounts.index.option_edit");?>
+												</a>
+												<button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+													<span class="caret"></span>
+												</button>
+												<ul class="dropdown-menu">
+													<li>
+														<a href="<?php echo $this->Html->safe($this->base_uri . "accounts/delete" . ($this->Html->ifSet($accounts[$i]->account_type) == "cc" ? "cc" : "ach") . "/" . $this->Html->_($accounts[$i]->id, true) . "/");?>" rel="<?php echo $this->Html->safe($this->_("ClientAccounts.index.confirm_delete", true));?>">
+															<?php
+															$this->Form->fieldHidden("id", $this->Html->ifSet($accounts[$i]->id));
+															?>
+															<i class="fa fa-ban fa-fw"></i> <?php $this->_("ClientAccounts.index.option_delete");?>
+														</a>
+													</li>
+												</ul>
+											</div>
+										</td>
+									</tr>
+									<?php
+									}
+									?>
+								</tbody>
+							</table>
+						</div>
+						<?php $this->Form->fieldHidden("type", $this->Html->_($account_type, true), array('id'=>"account_type"));?>
+						<button class="btn btn-default pull-right" type="submit">
+							<i class="fa fa-plus-circle"></i> <?php $this->_("ClientAccounts.index.field_accountsubmit");?>
+						</button>
+						<?php
+						}
+						else {
+						?>
+						<div class="alert alert-info">
+							<p><?php $this->_("ClientAccounts.index.no_results");?></p>
+						</div>
+						<?php
+						}
+						
+						$this->Form->end();
+						$this->WidgetClient->endBody();
+						$this->WidgetClient->end();
+						?>
+					</div>
+<?php
+$this->Javascript->setInline("
+	$(document).ready(function() {
+		$('#client_accounts input[name=\'account_id\']').click(function() {
+			$('#account_type').val($('input[name=\'account_type\']', $(this).parent()).val());
+		});
+		
+		// Handle confirmation on delete action
+		$('#client_accounts a[rel]').each(function() {
+			$(this).blestaModalConfirm({
+				base_url: '" . $this->base_uri . "',
+				confirm_data: {id: $('input[name=\"id\"]', $(this)).val()}
+			});
+		});
+	});
+");
+?>

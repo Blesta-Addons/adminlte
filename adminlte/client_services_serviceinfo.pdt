@@ -1,0 +1,68 @@
+		<?php
+		if ($this->Html->ifSet($content)) {
+			echo $content;
+		}
+		else {
+		?>
+		<div class="alert alert-info">
+			<p><?php $this->_("ClientServices.serviceinfo.no_results");?></p>
+		</div>
+		<?php
+		}
+		
+		// List add-on services
+		if (($num_services = count($this->Html->ifSet($services, array()))) > 0) {
+		?>
+		<h4><?php $this->_("ClientServices.index.heading_addons");?></h4>
+		<div class="table-responsive">
+			<table class="table table-curved table-striped table-hover">
+				<thead>
+					<tr>
+						<th><?php $this->_("ClientServices.index.heading_package");?></th>
+						<th><?php $this->_("ClientServices.index.heading_label");?></th>
+						<th><?php $this->_("ClientServices.index.heading_term");?></th>
+						<th><?php $this->_("ClientServices.index.heading_status");?></th>
+						<th><?php $this->_("ClientServices.index.heading_options");?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					for ($i=0; $i<$num_services; $i++) {
+					?>
+					<tr>
+						<td><?php $this->Html->_($services[$i]->package->name);?></td>
+						<td><?php $this->Html->_($services[$i]->name);?></td>
+						<td>
+							<?php
+							if ($this->Html->ifSet($services[$i]->package_pricing->period) == "onetime")
+								$this->Html->_($periods[$services[$i]->package_pricing->period]);
+							else {
+								$term = $this->Html->_($services[$i]->package_pricing->term, true);
+								echo $this->Html->safe($this->Html->concat(" ", $term, ($term == 1 ? $this->Html->ifSet($periods[$services[$i]->package_pricing->period]) : $this->Html->ifSet($periods[$services[$i]->package_pricing->period . "_plural"]))));
+							}
+							?>
+						</td>
+						<td><?php $this->Html->_($statuses[$this->Html->ifSet($services[$i]->status)]);?></td>
+						<td>
+							<?php
+							if ($services[$i]->status != "canceled") {
+							?>
+							<div class="btn-group">
+								<a href="<?php echo $this->base_uri . "services/manage/" . $this->Html->_($services[$i]->id, true) . "/";?>" class="btn btn-xs btn-default">
+									<i class="fa fa-file-text-o fa-fw"></i> <?php $this->_("ClientServices.index.option_manage");?>
+								</a>
+							</div>
+							<?php
+							}
+							?>
+						</td>
+					</tr>
+					<?php
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php
+		}
+		?>

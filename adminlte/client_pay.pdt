@@ -1,0 +1,57 @@
+		<div class="col-md-12">
+			<?php
+			echo $this->Html->ifSet($message);
+			
+			$this->WidgetClient->clear();		
+			$this->WidgetClient->create($this->_("ClientPay.index.boxtitle_pay", true), array('id'=>"client_pay"), $this->Html->ifSet($render_section, null));
+			$this->WidgetClient->startBody();
+			
+			$this->Form->create(null, array('class' => "form-inline"));
+			
+			echo $this->Html->ifSet($invoice_info);
+			?>
+			<hr />
+			<div class="row panel-fix">
+				<div class="col-xs-3">
+					<div class="form-group">
+						<?php
+						$this->Form->label($this->_("ClientPay.index.field_credit", true), "credit");
+						$this->Form->fieldText("credit", $this->Html->ifSet($vars->credit), array('id'=>"credit", 'class'=>"form-control"));
+						?>
+                        <span><?php $this->Html->_($currency);?></span>
+					</div>
+				</div>
+			</div>
+			
+			<button type="submit" class="btn btn-default pull-right">
+				<i class="fa fa-arrow-circle-right"></i> <?php $this->_("ClientPay.index.field_submit");?>
+			</button>
+			<?php
+			$this->Form->end();
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>
+		
+<script type="text/javascript">
+	$(document).ready(function() {
+		selectAllPayments();
+		
+		$("input[name='invoice_id[]']").on("change", function() {
+			if ($(this).val() == "all") {
+				if ($(this).is(":checked"))
+					$("input[name='invoice_id[]']").prop('checked', true);
+				else
+					$("input[name='invoice_id[]']").prop('checked', false);
+			}
+		});
+	});
+	
+	function selectAllPayments() {
+		var element = $("input[name='invoice_id[]']");
+		if ($(element).val() == "all") {
+			if ($(element).is(":checked"))
+				$(element).prop('checked', true);
+		}
+	}
+</script>

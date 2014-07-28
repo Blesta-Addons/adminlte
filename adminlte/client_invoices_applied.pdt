@@ -1,0 +1,50 @@
+
+					<?php
+					if ($this->Html->ifSet($applied, false) && ($num_applied = count($applied)) > 0) {
+					?>
+					<div class="table-responsive">
+						<table class="table table-curved table-striped table-hover">
+							<thead>
+								<tr>
+									<th><i class="fa fa-mail-forward fa-flip-vertical"></i></th>
+									<th><?php $this->_("ClientInvoices.applied.heading_paymenttype");?></th>
+									<th><?php $this->_("ClientInvoices.applied.heading_amount");?></th>
+									<th><?php $this->_("ClientInvoices.applied.heading_applied");?></th>
+									<th><?php $this->_("ClientInvoices.applied.heading_appliedon");?></th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php
+							for ($i=0; $i<$num_applied; $i++) {
+							?>
+							<tr>
+								<td>&nbsp;</td>
+								<td>
+									<?php
+									if ($this->Html->ifSet($applied[$i]->type) == "other" && $this->Html->ifSet($applied[$i]->gateway_type) == "nonmerchant")
+										$trans_type = $applied[$i]->gateway_name;
+									else
+										$trans_type = $this->Html->ifSet($transaction_types[($applied[$i]->type_name != "" ? $applied[$i]->type_name : $applied[$i]->type)]);
+									$this->Html->_($trans_type);
+									?>
+								</td>
+								<td><?php echo $this->CurrencyFormat->format($applied[$i]->amount, $applied[$i]->currency, array('html_code'=>true));?></td>
+								<td><?php echo $this->CurrencyFormat->format($applied[$i]->applied_amount, $applied[$i]->currency, array('html_code'=>true));?></td>
+								<td><?php echo $this->Date->cast($this->Html->_($applied[$i]->applied_date, true), "date_time");?></td>
+							</tr>
+							<?php
+							}
+							?>
+							</tbody>
+						</table>
+					</div>
+					<?php
+					}
+					else {
+					?>
+					<div class="alert alert-info">
+						<p><?php $this->_("ClientInvoices.applied.no_results");?></p>
+					</div>
+					<?php
+					}
+					?>

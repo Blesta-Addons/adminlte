@@ -1,0 +1,19 @@
+		
+						<?php echo $this->Html->ifSet($myinfo);?>
+					
+					
+						<div class="col-md-9 right_content">
+							<?php echo $this->Html->ifSet($message);?>
+						</div>						
+                    </div>
+                </div>
+	
+<?php
+$this->Javascript->setInline('
+	$(document).ready(function() {
+		$(".right_content").blestaLoadWidgets({
+			fetch_uri: "' . $this->Html->safe($this->base_uri . "main/getwidgets/" . $this->Html->ifSet($client->id), true) . '"
+		});
+	});
+');
+?>

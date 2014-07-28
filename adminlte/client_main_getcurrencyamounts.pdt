@@ -1,0 +1,28 @@
+	
+	<?php
+	if (!empty($amounts)) {
+	?>
+			<?php
+			if (count($this->Html->ifSet($currencies, array())) > 1) {
+			?>
+			
+				<?php
+				foreach ($currencies as $currency) {
+				?>
+				<a href="<?php echo $this->Html->safe($this->base_uri . "main/getcurrencyamounts/" . $this->Html->ifSet($currency) . "/");?>" class="btn btn-default btn-xs<?php echo ($currency == $this->Html->ifSet($selected_currency)) ? " active" : "";?>" id="<?php $this->Html->_($currency);?>"><?php $this->Html->_($currency);?></a>
+				<?php
+				}
+				?>
+				<br />
+			<?php
+			}
+			foreach ($amounts as $type => $item) {
+			?>
+			<?php $this->Html->_($item['lang']);?> <?php $this->Html->_($item['amount']);?>
+			<?php
+			}
+			?>
+
+	<?php
+	}
+	?>

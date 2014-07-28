@@ -1,0 +1,51 @@
+
+	<div class="col-md-4 col-sm-6 col-md-offset-1">
+		<h2><i class="fa fa-lock"></i> <?php $this->Html->_($company->name);?></h2>
+		<h4><?php $this->_("ClientLogin.confirmreset.reset_heading");?></h4>
+		<p><?php $this->_("ClientLogin.confirmreset.description");?></p>
+		<hr />
+	</div>
+	<div class="col-md-4 col-sm-6 col-md-offset-1">
+		<div class="panel panel-blesta">
+			<div class="panel_content">
+				<div class="panel-body">
+					<?php echo $this->Html->ifSet($message);?>
+					
+					<?php
+					$this->Form->create();
+					?>
+					<fieldset>
+						<div class="form-group">
+							<?php
+							$this->Form->label($this->_("ClientLogin.confirmreset.field_new_password", true), "login_new_password");
+							$this->Form->fieldPassword("new_password", array('id'=>"login_new_password", 'class'=>"form-control"));
+							?>
+						</div>
+						<div class="form-group">
+							<?php
+							$this->Form->label($this->_("ClientLogin.confirmreset.field_confirm_password", true), "login_confirm_password");
+							$this->Form->fieldPassword("confirm_password", array('id'=>"login_confirm_password", 'class'=>"form-control"));
+							?>
+						</div>
+						<button type="submit" class="btn btn-success btn-block">
+							<i class="fa fa-arrow-circle-right"></i> <?php $this->_("ClientLogin.confirmreset.field_resetsubmit");?>
+						</button>
+						<a class="btn btn-default btn-block" href="<?php echo $this->Html->safe($this->base_uri . "login/");?>">
+							<i class="fa fa-ban"></i> <?php $this->_("ClientLogin.confirmreset.link_login");?>
+						</a>
+					</fieldset>
+					<?php
+					$this->Form->end();
+					?>
+				</div>
+			</div>
+		</div>
+	</div>
+
+<?php
+$this->Javascript->setInline('
+	$(document).ready(function() {
+		$("#login_new_password").focus();
+	});
+');
+?>

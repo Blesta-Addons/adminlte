@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html dir="<?php echo (in_array($this->_("AppController.lang.dir", true), array("ltr", "rtl")) ? $this->_("AppController.lang.dir", true) : "ltr");?>">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title><?php echo (($page_title = (isset($page_title) ? $page_title : $this->_($page_title_lang, true, $get_params))) ? $this->Html->_($page_title, true) . " | " : "") . $this->Html->_($system_company->name, true);?></title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="<?php echo $this->view_dir;?>images/favicon.ico" />
+		
+		<link href="<?php echo $this->view_dir;?>css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+		
+		<link href="<?php echo $this->view_dir;?>css/slider.css" rel="stylesheet" type="text/css" />
+		<link href="<?php echo $this->view_dir;?>font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />		
+        <!-- Ionicons -->
+        <link href="<?php echo $this->view_dir;?>css/ionicons.min.css" rel="stylesheet" type="text/css" />
+        <!-- Theme style -->
+        <link href="<?php echo $this->view_dir;?>css/AdminLTE.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->view_dir;?>css/styles.css" rel="stylesheet" type="text/css" />
+        <link href="<?php echo $this->view_dir;?>css/<?php echo (in_array($this->_("AppController.lang.dir", true), array("ltr", "rtl")) ? $this->_("AppController.lang.dir", true) : "ltr");?>.css" rel="stylesheet" type="text/css" />
+		<!-- jQuery -->		
+		<script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/jquery.min.js"></script>
+        <!-- jQuery UI 1.10.3 -->
+        <script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/jquery-ui-1.10.3.min.js" ></script>			
+        <!-- Bootstrap -->		
+		<script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/bootstrap.min.js"></script>
+		<!--[if lt IE 10]><script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/json2.js"></script><![endif]-->
+		<script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/history.adapter.jquery.js"></script>
+		<script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/history.js"></script>
+		<!--[if lt IE 10]><script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/history/history.html4.js"></script><![endif]-->
+		<script type="text/javascript" src="<?php echo $this->view_dir;?>javascript/jquery-client-3.2.0.js"></script>		
+		<?php
+		// Theme CSS
+		if (isset($theme_css)) {
+		?>
+		<link href="<?php $this->Html->_($theme_css);?>" rel="stylesheet" type="text/css" media="screen" />
+		<?php
+		}
+		?>
+
+		
+
+		
+		<?php
+		echo $this->Javascript->getFiles("head");
+		echo $this->Html->ifSet($custom_head);
+		?>
+		
+		<!--[if lt IE 9]>
+			<script src="<?php echo $this->view_dir;?>javascript/html5shiv.js" type="text/javascript"></script>
+			<script src="<?php echo $this->view_dir;?>javascript/respond.min.js" type="text/javascript"></script>
+		<![endif]-->
+    </head>
+    <body class="skin-blue">
+		<?php
+		#
+		# TODO: Order plugin sets an "$outer_class" variable to the parent section (now body). this may no longer be necessary
+		#
+		if ($this->Html->ifSet($show_header, true)) {
+		?>
+		
+        <!-- header logo: style can be found in header.less -->
+        <header class="header">
+		<!-- Add the class icon to your logo image or logo icon to add the margining -->
+			<a href="<?php echo $this->Html->safe($this->base_uri);?>" class="logo title">
+				<?php
+					if (!empty($theme_logo)) {
+				?>
+					<img src="<?php $this->Html->_($theme_logo);?>" alt="Logo" />
+				<?php
+				}
+				elseif (!empty($blesta_logo)) {
+				?>
+					<img src="<?php $this->Html->_($blesta_logo);?>" alt="Blesta" />
+				<?php
+				}
+				else {
+				?>
+					<img src="<?php echo $this->view_dir;?>images/logo.png" alt="Blesta" />
+				<?php
+				}
+				?>
+			</a><!-- LOGO END  -->
+			
+
+			<?php
+				if (!$this->Html->ifSet($logged_in)) {
+			?>
+            <!-- Header Navbar: style can be found in header.less -->
+			<nav class="navbar navbar-static-top header" role="navigation">				
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only"><?php $this->_("AppController.sreader.navigation");?></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>				
+			</nav>	
+
+			<?php
+			}
+			else {
+			?>			
+
+            <!-- Header Navbar: style can be found in header.less -->
+            <nav class="navbar navbar-static-top header" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only"><?php $this->_("AppController.sreader.navigation");?></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        <!-- Messages: style can be found in dropdown.less-->
+						
+						<?php
+							if ($this->Html->ifSet($staff_as_client)) {
+						?>
+						<li class=" bg-green">
+                            <a href="<?php echo $this->Html->safe($this->admin_uri . "clients/logoutasclient/");?>">
+                                <span class="fa fa-info-circle"></span>
+                                <span><?php $this->_("AppController.client_structure.staff_as_client_note");?></span>
+                            </a>
+						</li>	
+						<?php
+						}
+						?>							
+						
+                        <li class="dropdown messages-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-envelope"></i>
+                                <span class="label label-success">0</span>
+                            </a>
+                        </li>
+                        <!-- Notifications: style can be found in dropdown.less -->
+                        <li class="dropdown notifications-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-warning"></i>
+                                <span class="label label-warning">0</span>
+                            </a> 
+                        </li>
+                        <!-- Tasks: style can be found in dropdown.less -->
+                        <li class="dropdown tasks-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="fa fa-tasks"></i>
+                                <span class="label label-danger">0</span>
+                            </a>
+                        </li>
+                        <!-- User Account: style can be found in dropdown.less -->
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                <i class="glyphicon glyphicon-user"></i>
+                                <span><?php $this->_("ClientMain.myinfo.boxtitle_client");?> <i class="caret"></i></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <!-- User image -->
+                                <li class="user-header bg-light-blue">
+									<img src="//www.gravatar.com/avatar/<?php echo md5(strtolower(trim($this->Html->_($client->email, true))));?>?s=120" class="img-circle" alt="User Image" />
+                                    <p>
+                                        <?php echo  $this->_("ClientMain.myinfo.client_id", true,  $client->id_value) ;?> - <?php echo $this->Html->_($client->first_name, true) . " " . $this->Html->_($client->last_name, true);?>
+                                        <small>Member since <?php echo $this->Date->cast($this->Html->ifSet($client->date_added));?></small>
+                                    </p>
+                                </li>
+                                <!-- Menu Body -->
+                                <li class="user-body">
+                                    
+									
+									<?php
+									$obj = new stdClass();
+									Loader::loadModels($obj, array("PluginManager"));					
+									$getInstalled = $obj->PluginManager->getInstalled();									
+									if ($obj->PluginManager->isInstalled("support_manager",$system_company->id)) {
+									?>
+									<div class="col-xs-4 text-center">
+										<a href="<?php echo $this->Html->safe($this->base_uri . "plugin/support_manager/client_tickets/departments/");?>">Add Ticket</a>
+									</div>	
+									<?php
+									}						
+									?>		
+                                        
+                                    
+                                    <div class="col-xs-4 text-center">
+                                        <a href="<?php echo $this->Html->safe($this->base_uri . "contacts/add/");?>">Add Contact</a>
+                                    </div>
+                                    <div class="col-xs-4 text-center">
+                                        <a href="#">Private Note</a>
+                                    </div>
+                                </li>
+                                <!-- Menu Footer-->
+                                <li class="user-footer">
+                                    <div class="pull-left">
+                                        <a href="<?php echo $this->Html->safe($this->client_uri . "main/edit/");?>" class="btn btn-default btn-flat"><i class="fa fa-edit fa-fw"></i> <?php $this->_("AppController.client_structure.text_update_account");?></a>
+                                    </div>
+                                    <div class="pull-right">
+                                        <a href="<?php echo $this->Html->safe($this->client_uri . "logout/");?>" class="btn btn-default btn-flat"><i class="fa fa-sign-out fa-fw"></i> <?php $this->_("AppController.client_structure.text_logout");?></a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+			<?php
+			}
+			?>			
+        </header>		
+
+		<?php
+		}
+		?>
+		
+		<?php
+			if ($this->Html->ifSet($logged_in)) {
+		?>	
+		<!-- Begin Content -->
+		<div class="wrapper row-offcanvas row-offcanvas-left">	
+            <!-- Left side column. contains the logo and sidebar -->
+            <aside class="left-side sidebar-offcanvas">
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+                    <!-- Sidebar user panel -->
+                    <div class="user-panel">
+                        <div class="pull-left image">
+							<img src="//www.gravatar.com/avatar/<?php echo md5(strtolower(trim($this->Html->_($client->email, true))));?>?s=120" class="img-circle" alt="User Image" />
+                        </div>
+                        <div class="pull-left info">
+                            <p> <?php echo  $this->_("ClientMain.myinfo.client_id", true,  $client->id_value) ;?></p>
+                            
+                        </div>
+                    </div>
+                    <!-- search form -->
+                    <form action="#" method="get" class="sidebar-form">
+                        <div class="input-group">
+                            <input type="text" name="q" class="form-control" placeholder="Search..."/>
+                            <span class="input-group-btn">
+                                <button type='submit' name='seach' id='search-btn' class="btn btn-flat"><i class="fa fa-search"></i></button>
+                            </span>
+                        </div>
+                    </form>
+                    <!-- /.search form -->
+                    <!-- sidebar menu: : style can be found in sidebar.less -->
+					
+					<?php
+					$active_nav = null;
+					?>
+					<ul class="sidebar-menu">
+						<?php
+						foreach ($this->Html->ifSet($nav, array()) as $link => $value) {
+							$attributes = array();
+							$link_attributes = array();
+							$dropdown = !empty($value['sub']);
+							$active = false;
+							
+							if ($value['active']) {
+								$active = true;
+								$attributes['class'][] = "active";
+								$active_nav = $value;
+							}
+							if ($dropdown) {
+								$attributes['class'][] = "dropdown";
+								$link_attributes['class'][] = "dropdown-toggle";
+								$link_attributes['data-toggle'][] = "dropdown";
+								
+								// Set parent to active if child is
+								if (!$active) {
+									foreach ($this->Html->ifSet($value['sub'], array()) as $sub_link => $sub_value) {
+										if ($sub_value['active']) {
+											$attributes['class'][] = "active";
+											break;
+										}
+									}
+								}
+							}
+						?>
+						<li<?php echo $this->Html->buildAttributes($attributes);?>>
+							<a href="<?php $this->Html->_($link);?>"<?php echo $this->Html->buildAttributes($link_attributes);?>>
+								<i class="<?php $this->Html->_($value['icon']);?>"></i> 
+								<?php
+								$this->Html->_($value['name']);
+								
+								if ($dropdown) {
+								?>
+								<b class="caret"></b>
+								<?php
+								}
+								?>
+							</a>
+							<?php
+							if (!empty($value['sub'])) {
+							?>
+							<ul class="dropdown-menu">
+								<?php
+								foreach ($this->Html->ifSet($value['sub'], array()) as $sub_link => $sub_value) {
+								?>
+								<li>
+									<a href="<?php $this->Html->_($sub_link);?>"><i class="<?php $this->Html->_($sub_value['icon']);?>"></i> <?php $this->Html->_($sub_value['name']);?></a>
+								</li>
+								<?php
+								}
+								?>
+							</ul>
+							<?php
+							}
+							?>
+						</li>
+						<?php
+						}
+						?>
+                    </ul>
+			
+                </section>
+                <!-- /.sidebar -->
+            </aside>
+            <!-- Right side column. Contains the navbar and content of the page -->
+            <aside class="right-side">
+					<!-- Content Header (Page header) -->
+					<section class="content-header">
+						<h1>
+							<?php echo ($this->Html->ifSet($title) ? $this->Html->_($title, true) : $this->_("AppController.client_structure.default_title", true));?> - <?php echo  $this->_("ClientMain.!info.invoice_due_title", true,  $client->first_name) ;?>
+							<small><?php echo (!empty($client->company) ? $this->Html->_($client->company, true) : "");?></small>
+						</h1>
+						<ol class="breadcrumb">
+
+						</ol>
+					</section>
+                <!-- Main content -->
+                <section class="content">
+					<?php
+					if (!empty($active_nav['secondary'])) {
+					?>				
+					<div class="row">
+						<div class="col-md-10 col-md-offset-1">
+							<div class="ui-group-buttons ">
+								<?php
+								foreach ($active_nav['secondary'] as $link => $value) {
+								?>
+									<a href="<?php $this->Html->_($link);?>" class="btn btn-lg top-focus-box <?php echo ($value['active'] ? "active" : "");?>">
+										<i class="<?php $this->Html->_($value['icon']);?>"></i> 
+										<?php
+										$this->Html->_($value['name']);
+										?>
+									</a>									
+								<?php
+									if(end($active_nav['secondary']) !== $value)
+										echo  '<div class="or or-lg"></div>';
+									
+								}
+								?>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<?php echo $content;?>
+					</div>		
+					<?php
+					}
+					else {
+					?>			
+					<div class="row">	
+						<?php echo $content;?>
+					</div>						
+				<?php
+				}
+				?>	
+                </section>
+            </aside><!-- /.right-side -->
+        </div><!-- ./wrapper -->
+		<?php
+		}
+		else {
+		?>
+		<div class="wrapper row-offcanvas row-offcanvas-left">	
+                <!-- Main content -->
+				<section class="content">		
+					<div class="row">
+						<div class="col-md-10 col-md-offset-1">
+							<?php echo $content;?>
+						</div>
+					</div>
+                </section><!-- /.content -->
+        </div><!-- ./wrapper -->		
+		<?php
+		}
+		?>		
+
+          
+		<?php echo $this->Javascript->getFiles("body");?>
+		<?php echo $this->Javascript->getInline();?>
+		
+    </body>
+</html>

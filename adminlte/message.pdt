@@ -1,0 +1,79 @@
+<?php
+$success_message = (isset($success) ? $success : (isset($message) ? $message : false));
+$types = array(
+	'success' => array(
+		'show' => (isset($success) || isset($message)),
+		'title' => $this->Html->ifSet($message_title, false),
+		'message' => $success_message,
+		'icon' => "fa-check" ,
+		'buttons' => $this->Html->ifSet($success_buttons)
+	),
+	'danger' => array(
+		'show' => isset($error),
+		'title' => $this->Html->ifSet($error_title, false),
+		'message' => (isset($error) ? $error : false),
+		'icon' => "fa-ban" ,
+		'buttons' => $this->Html->ifSet($danger_buttons)
+	),
+	'warning' => array(
+		'show' => isset($notice),
+		'title' => $this->Html->ifSet($notice_title, false),
+		'message' => (isset($notice) ? $notice : false),
+		'icon' => "fa-warning" ,
+		'buttons' => $this->Html->ifSet($notice_buttons)
+	),
+	'info' => array(
+		'show' => isset($info),
+		'title' => $this->Html->ifSet($info_title, false),
+		'message' => (isset($info) ? $info : false),
+		'icon' => "fa-info" ,
+		'buttons' => $this->Html->ifSet($info_buttons)
+	)
+);
+
+foreach ($types as $type => $message) {
+	if (!$message['show'])
+		continue;
+?>
+<h2 class="page-header">  </h2>
+<div class="alert alert-<?php $this->Html->_($type);?> alert-dismissable">
+	<?php
+	if ($this->Html->ifSet($show_close, true)) {
+	?>
+	<i class="fa <?php $this->Html->_($message['icon']);?>"></i> 
+	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+	<?php
+	}
+	if ($this->Html->ifSet($message['title'], false)) {
+	?>
+	<strong><?php $this->Html->_($message['title']);?></strong>
+	<?php
+	}
+	
+	if (is_array($message['message'])) {
+		foreach ($message['message'] as $field => $messages) {
+			foreach ($messages as $key => $message_text) {
+			?>
+			<p><?php $this->Html->_($message_text, false, $this->Html->ifSet($preserve_tags, false));?></p>
+			<?php
+			}
+		}
+	}
+	else {
+	?>
+	<p><?php $this->Html->_($message['message'], false, $this->Html->ifSet($preserve_tags, false));?></p>
+	<?php
+	}
+	
+	if ($this->Html->ifSet($message['buttons'], false) && is_array($message['buttons'])) {
+		foreach ($message['buttons'] as $button) {
+	?>
+	<p><a href="<?php $this->Html->_($button['url']);?>" class="btn btn-<?php $this->Html->_($type);?>"><i class="fa fa-exclamation-triangle fa-fw"></i> <?php $this->Html->_($button['label']);?></a></p>
+	<?php
+		}
+	}
+	?>
+</div>
+<?php
+}
+?>

@@ -1,0 +1,23 @@
+
+		<div class="col-md-3">
+			<?php echo $this->Html->ifSet($tabs);?>
+		</div>
+		<div class="col-md-9">
+			<?php
+			echo $this->Html->ifSet($message);
+			
+			$this->WidgetClient->clear();
+			
+			$this->WidgetClient->create($this->_("ClientServices.manage.boxtitle_manage", true, $this->Html->ifSet($package->name), $this->Html->ifSet($service->name)), array('id'=>"client_services_manage"), $this->Html->ifSet($render_section, null));
+			$this->WidgetClient->startBody();
+			
+			if ($this->Html->ifSet($tab_view)) {
+				echo $tab_view;
+			}
+			else {
+				echo $this->Html->ifSet($service_infobox);
+			}
+			$this->WidgetClient->endBody();
+			$this->WidgetClient->end();
+			?>
+		</div>

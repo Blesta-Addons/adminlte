@@ -1,0 +1,172 @@
+					<!-- Small boxes (Stat box) -->
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-green">
+							<div class="inner">
+								<h3>
+									<i class="fa fa-envelope fa-lg pull-right"></i>	
+								</h3>
+								<p>
+									<?php $this->Html->_($myinfo_settings['invoice']['description']);?> 
+								</p>
+							</div>
+							<div class="icon">
+								
+							</div>
+							<a href="<?php echo $this->Html->safe($this->base_uri . "main/invoicemethod/");?>" class="small-box-footer">
+								<?php $this->_("ClientMain.myinfo.setting_change");?>  <i class="fa fa-arrow-circle-right"></i>
+							</a>
+						</div>
+					</div><!-- ./col -->
+					<?php
+					if ($this->Html->ifSet($myinfo_settings['autodebit']['enabled'], false)) {
+					?>
+					
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-aqua">
+							<div class="inner">
+								<h3>
+									<i class="fa fa-cog fa-lg pull-right"></i>
+								</h3>
+								<p>
+									<?php $this->Html->_($myinfo_settings['autodebit']['description']);?> 
+								</p>
+							</div>
+							<div class="icon">
+								
+							</div>
+							<a href="<?php echo $this->Html->safe($this->base_uri . "accounts/");?>" class="small-box-footer">
+								<?php $this->_("ClientMain.myinfo.setting_change");?> <i class="fa fa-arrow-circle-right"></i>
+							</a>
+						</div>
+					</div><!-- ./col -->
+					<?php
+					}
+					?>	
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-yellow">
+							<div class="inner">
+								<h3>
+									<i class="fa fa-money fa-lg pull-right"></i>
+								</h3>
+								<p>	
+									<div class="amounts"></div>
+								</p>
+							</div>
+							<div class="icon">
+
+							</div>
+							<a href="<?php echo $this->Html->safe($this->base_uri . "pay/");?>" class="small-box-footer">
+								Add Funds
+							</a>
+						</div>										
+					</div><!-- ./col -->
+					<div class="col-lg-3 col-xs-6">
+						<!-- small box -->
+						<div class="small-box bg-red">
+							<div class="inner">
+								<h3>
+									<i class="glyphicon glyphicon-user pull-right"></i>
+								</h3>
+								<p>
+									<?php echo "Member since : " . $this->Date->cast($this->Html->ifSet($client->date_added));?>
+									<?php									
+									$obj = new stdClass();
+									Loader::loadModels($obj, array("Logs"));
+									$obj = $obj->Logs->getUserLog($client->id_value);
+									#
+									# TODO: set user log
+									echo  "Last Visit : " . $this->Date->cast($this->Html->ifSet($obj->date_updated));	
+									//print_r($obj);
+									?>									
+									 
+								</p>
+							</div>
+							<div class="icon">
+							   
+							</div>
+							<a href="#" class="small-box-footer">
+								From <?php  $this->Html->_($obj->ip_address) ; ?>
+							</a>
+						</div>
+					</div><!-- ./col -->
+				</div><!-- ./row -->
+					
+				<div class="row">
+					<div class="col-md-3 hidden-xs hidden-sm">
+						<!-- Solid boxes -->
+						<div class="row">	
+							<div class="col-md-12 ">						
+								<!-- Primary box -->
+								<div class="box panel-blesta">
+									<div class="box-header panel-heading ">
+										<h3 class="box-title"><?php $this->_("ClientMain.myinfo.boxtitle_client");?></h3>
+									</div>									
+										<ul class="list-group">
+										
+											<li class="list-group-item "><a href="#" ><strong><?php echo $this->Html->_($client->first_name, true) . " " . $this->Html->_($client->last_name, true);?></strong></a></li>
+											<?php
+											echo (!empty($client->company) ? "<li class='list-group-item '>" . $this->Html->_($client->company, true) . "</li>" : "");
+											echo (!empty($client->address1) ? "<li class='list-group-item '>" . $this->Html->_($client->address1, true) . "</li>" : "");
+											echo (!empty($client->address2) ? "<li class='list-group-item '>" . $this->Html->_($client->address2, true) . "</li>" : "");
+											echo (!empty($client->city) ? "<li class='list-group-item '>" . $this->Html->_($client->city, true) . (!empty($client->state) ? ", " . $this->Html->_($client->state, true) : "")  ."</li>" : $this->Html->_($client->state, true));
+											echo "<li class='list-group-item '>" . $this->Html->_($client->zip, true) . " " . $this->Html->_($client->country, true) ."</li>";
+											?>	
+											<li class="list-group-item "><i class="glyphicon glyphicon-envelope"></i><span class="pull-right"><a href="mailto:<?php $this->Html->_($client->email);?>"><?php $this->Html->_($client->email);?></a></span></li>
+											<?php
+											// Display client phone numbers
+											if ($this->Html->ifSet($client->numbers, false) && ($num_numbers = count($client->numbers)) > 0) {
+												for ($i=0; $i<$num_numbers; $i++) { ?>												
+													<li class="list-group-item "><i class="glyphicon glyphicon-earphone"></i> (<?php echo ucfirst($this->Html->_($client->numbers[$i]->location, true)) . " " . ucfirst($this->Html->_($client->numbers[$i]->type, true));?>)
+													 <span class="pull-right"><a href="#" > <?php  $this->Html->_($client->numbers[$i]->number);?> </a>  </span></li>
+												
+												<?php
+													
+												}
+											}
+											echo (!empty($client->tax_id) ? "<li class='list-group-item '>" . $this->Html->_($client->tax_id, true) . "</li>" : "");
+											?>
+											<li class="list-group-item "><i class="fa fa-flag"></i> Lang <span class="pull-right"><a href="#" ><strong><?php echo $client->settings['language'] ;?></strong></a></span></li>
+											<li class="list-group-item "><i class="fa fa-money"></i> Default Currency <span class="pull-right"><a href="#" ><strong><?php echo $client->settings['default_currency'] ;?></strong></a></span></li>
+											<?php
+												if ($this->Html->ifSet($staff_as_client)) {
+											?>												
+											<li class="list-group-item "><i class="fa fa-cut"></i> Auto Suspend <span class="pull-right"><a href="#" ><strong><?php echo $this->Html->safe($this->Html->ifSet($client->settings['autosuspend'], "false") == "true" ? "Enabled" : "Disabled");?></strong></a></span></li>
+											<li class="list-group-item "><i class="fa fa-cut"></i> Auto Debit <span class="pull-right"><a href="#" ><strong><?php echo $this->Html->safe($this->Html->ifSet($client->settings['autodebit'], "false") == "true" ? "Enabled" : "Disabled");?></strong></a></span></li>
+											<li class="list-group-item "><i class="fa fa-plus-square-o"></i> Tax <span class="pull-right"><a href="#" ><strong><?php echo $this->Html->safe($this->Html->ifSet($client->settings['enable_tax'], "false") == "true" ? "Enabled" : "Disabled");?> </strong></a></span></li>
+											<li class="list-group-item "><i class="fa fa-cut"></i> Tax Exempt <span class="pull-right"><a href="#" ><strong><?php echo $this->Html->safe($this->Html->ifSet($client->settings['tax_exempt'], "false") == "true" ? "Enabled" : "Disabled");?></strong></a></span></li>
+											<?php
+											}
+											?>											
+											<li class="list-group-item panel-footer"> <span class="pull-right"><a href="<?php echo $this->Html->safe($this->base_uri . "main/edit/");?>" type="button" class="btn btn-sm btn-warning" ><i class="glyphicon glyphicon-edit"></i><?php $this->_("ClientMain.myinfo.link_editclient");?></a></span><div class="clearfix"></div></li>
+
+										</ul>		
+								</div><!-- /.box -->					
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.col -->
+		<?php
+		$this->Javascript->setInline('
+			$(document).ready(function() {
+				fetchCurrencyAmounts("' . $this->Html->ifSet($client->settings['default_currency']) . '");
+				$(".col-xs-6 .amounts").on("click", "a", function() {
+					fetchCurrencyAmounts($(this).attr("id"));
+					return false;
+				});
+			});
+			
+			function fetchCurrencyAmounts(currency) {
+				$(this).blestaRequest("GET", "' . $this->Html->safe($this->base_uri . "main/getcurrencyamounts/") . '" + currency, null, function(data) {
+					if (data)
+						$(".amounts").html(data);
+				},
+				null,
+				{dataType:"json"});
+			}
+			
+			
+			//$( "div.amounts" ).replaceWith( "<h2>New heading</h2>" );
+		');
+		?>		

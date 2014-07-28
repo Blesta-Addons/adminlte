@@ -1,0 +1,26 @@
+
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+						<h4 class="global_modal_title"><i class="fa fa-check-square-o"></i> <?php $this->_("AppController.modal.text_confirm");?></h4>
+					</div>
+					<div class="modal-body">
+						<?php echo $this->Html->ifSet($message);?>
+					</div>
+					<div class="modal-footer">
+						<?php
+						if ($this->Html->ifSet($confirm_url)) {
+							$this->Form->create($confirm_url);
+							foreach ((array)$this->Html->ifSet($confirm_data, array()) as $key => $value) {
+								$this->Form->fieldHidden($key, $value);
+							}
+							
+							$this->Form->fieldButton("submit", $this->_("ClientDialog.confirm.text_yes", true), array('class' => "btn btn-default yes", 'type' => "submit"));
+							$this->Form->fieldButton("cancel", $this->_("ClientDialog.confirm.text_no", true), array('class' => "btn btn-primary", 'data-dismiss' => "modal"));
+							$this->Form->end();
+						}
+						else {
+							$this->Form->fieldButton("submit", $this->_("ClientDialog.confirm.text_yes", true), array('class' => "btn btn-default yes", 'type' => "submit"));
+							$this->Form->fieldButton("cancel", $this->_("ClientDialog.confirm.text_no", true), array('class' => "btn btn-primary", 'data-dismiss' => "modal"));
+						}
+						?>
+					</div>

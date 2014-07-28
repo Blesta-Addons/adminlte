@@ -1,0 +1,96 @@
+
+		<?php
+		// Don't show this container when only rendering the widget section
+		if (!$this->Html->ifSet($render_section) && !$this->Html->ifSet($is_ajax)) {
+		?>
+	<div class="col-md-12">
+		<?php
+		}
+		$links = array(
+			array('name'=>$this->_("ClientTransactions.index.category_approved", true) . " <span class=\"badge\">" . $this->Html->_($status_count['approved'], true) . "</span>", 'current'=>($this->Html->ifSet($status) == "approved" ? true : false), 'attributes'=>array('href'=>$this->base_uri . "transactions/index/approved/", 'class'=>"ajax")),
+			array('name'=>$this->_("ClientTransactions.index.category_declined", true) . " <span class=\"badge\">" . $this->Html->_($status_count['declined'], true) . "</span>", 'current'=>($this->Html->ifSet($status) == "declined" ? true : false), 'attributes'=>array('href'=>$this->base_uri . "transactions/index/declined/", 'class'=>"ajax"))
+		);
+		
+		$this->WidgetClient->clear();
+		$this->WidgetClient->setLinks($links);
+		$this->WidgetClient->create($this->_("ClientTransactions.index.boxtitle_transactions", true), array('id'=>"client_transactions"), $this->Html->ifSet($render_section, null));
+		$this->WidgetClient->startBody();
+		
+		if ($this->Html->ifSet($transactions, false) && ($num_transactions = count($transactions)) > 0) {
+		?>
+		<div class="table-responsive">
+			<table class="table table-curved table-striped-alt table-hover" id="transactions">
+				<thead>
+					<tr>
+						<th><a href="<?php echo $this->Html->safe($this->base_uri . "transactions/index/" . $this->Html->ifSet($status) . "/?sort=type&order=" . ($sort == "type" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "type" ? " " . $order : "");?>"><?php $this->_("ClientTransactions.index.heading_type");?></a></th>
+						<th><a href="<?php echo $this->Html->safe($this->base_uri . "transactions/index/" . $this->Html->ifSet($status) . "/?sort=amount&order=" . ($sort == "amount" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "amount" ? " " . $order : "");?>"><?php $this->_("ClientTransactions.index.heading_amount");?></a></th>
+						<th><?php $this->_("ClientTransactions.index.heading_credited");?></th>
+						<th><a href="<?php echo $this->Html->safe($this->base_uri . "transactions/index/" . $this->Html->ifSet($status) . "/?sort=applied_amount&order=" . ($sort == "applied_amount" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "applied_amount" ? " " . $order : "");?>"><?php $this->_("ClientTransactions.index.heading_applied");?></a></th>
+						<th><a href="<?php echo $this->Html->safe($this->base_uri . "transactions/index/" . $this->Html->ifSet($status) . "/?sort=transaction_id&order=" . ($sort == "transaction_id" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "transaction_id" ? " " . $order : "");?>"><?php $this->_("ClientTransactions.index.heading_number");?></a></th>
+						<th><a href="<?php echo $this->Html->safe($this->base_uri . "transactions/index/" . $this->Html->ifSet($status) . "/?sort=date_added&order=" . ($sort == "date_added" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "date_added" ? " " . $order : "");?>"><?php $this->_("ClientTransactions.index.heading_date");?></a></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					// Display all transactions
+					for ($i=0; $i<$num_transactions; $i++) {
+						if ($this->Html->ifSet($transactions[$i]->type) == "other" && $this->Html->ifSet($transactions[$i]->gateway_type) == "nonmerchant")
+							$trans_type = $transactions[$i]->gateway_name;
+						else
+							$trans_type = $this->Html->ifSet($transaction_types[($transactions[$i]->type_name != "" ? $transactions[$i]->type_name : $transactions[$i]->type)]);
+					?>
+					<tr class="expand transaction_applied">
+						<td><?php $this->Html->_($trans_type);?></td>
+						<td><?php echo $this->CurrencyFormat->format($this->Html->_($transactions[$i]->amount, true), $this->Html->_($transactions[$i]->currency, true), array('html_code'=>true));?></td>
+						<td><?php echo $this->CurrencyFormat->format($this->Html->_($transactions[$i]->credited_amount, true), $this->Html->_($transactions[$i]->currency, true), array('html_code'=>true));?></td>
+						<td><?php echo $this->CurrencyFormat->format($this->Html->_($transactions[$i]->applied_amount, true), $this->Html->_($transactions[$i]->currency, true), array('html_code'=>true));?></td>
+						<td><?php $this->Html->_($transactions[$i]->transaction_id);?></td>
+						<td><?php echo $this->Date->cast($this->Html->_($transactions[$i]->date_added, true), "date");?></td>
+					</tr>
+					<tr class="expand_details" id="transactions_<?php $this->Html->_($transactions[$i]->id);?>">
+						<td colspan="8" class="subtable">
+						</td>
+					</tr>					
+					<?php
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+		<?php
+		}
+		else {
+		?>
+		<div class="alert alert-info">
+			<p>
+				<?php
+				$section_language = $this->_("ClientTransactions.index.category_" . $this->Html->ifSet($status), true);
+				$this->_("ClientTransactions.index.no_results", false, $section_language);
+				?>
+			</p>
+		</div>
+		<?php
+		}
+		$this->WidgetClient->endBody();
+		if ($this->Pagination->hasPages()) {
+			$this->WidgetClient->startFooter();
+			$this->Pagination->build();
+			$this->WidgetClient->endFooter();
+		}
+		$this->Widget->end();
+		// Don't show this container when only rendering the widget section
+		if (!$this->Html->ifSet($render_section) && !$this->Html->ifSet($is_ajax)) {
+		?>
+	</div>
+		<?php
+		}
+		?>
+		
+<script type="text/javascript">
+$(document).ready(function() {
+	// Fetch all invoices the given transaction has been applied to
+	$(".transaction_applied").click(function() {
+		$(this).blestaUpdateRow("<?php echo $this->Html->safe($this->Html->_($this->base_uri, true) . "transactions/applied/");?>" + $(this).next("tr").attr("id").split("_")[1], ".subtable");
+	});
+});
+</script>

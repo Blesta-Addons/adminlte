@@ -1,0 +1,154 @@
+
+			<?php
+			// Don't show this container when only rendering the widget section
+			if (!$this->Html->ifSet($render_section) && !$this->Html->ifSet($is_ajax)) {
+			?>
+		<div class="col-md-12">
+			<?php
+			}
+			$link_buttons = array(
+				array('name'=>$this->_("ClientInvoices.index.categorylink_make_payment", true), 'attributes'=>array("href"=>$this->base_uri . "pay/"))
+			);
+			
+			$links = array(
+				array('name'=>$this->_("ClientInvoices.index.category_open", true) . " <span class=\"badge\">" . $this->Html->_($status_count['open'], true) . "</span>", 'current'=>($this->Html->ifSet($status) == "open" ? true : false), 'attributes'=>array('href'=>$this->base_uri . "invoices/index/open/", 'class'=>"ajax")),
+				array('name'=>$this->_("ClientInvoices.index.category_closed", true) . " <span class=\"badge\">" . $this->Html->_($status_count['closed'], true) . "</span>", 'current'=>($this->Html->ifSet($status) == "closed" ? true : false), 'attributes'=>array('href'=>$this->base_uri . "invoices/index/closed/", 'class'=>"ajax"))
+			);
+			
+			$this->WidgetClient->clear();
+			$this->WidgetClient->setLinkButtons($link_buttons);
+			$this->WidgetClient->setLinks($links);
+			$this->WidgetClient->create($this->_("ClientInvoices.index.boxtitle_invoices", true), array('id'=>"client_invoices"), $this->Html->ifSet($render_section, null));
+			$this->WidgetClient->startBody();
+			?>
+
+				<?php
+				if ($this->Html->ifSet($invoices, false) && ($num_invoices = count($invoices)) > 0) {
+				?>
+				<div class="table-responsive">
+					<table class="table table-curved table-striped-alt table-hover" id="invoices">
+						<thead>
+							<tr>
+								<th><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/index/" . $this->Html->ifSet($status) . "/?sort=id_code&order=" . ($sort == "id_code" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "id_code" ? " " . $order : "");?>"><?php $this->_("ClientInvoices.index.heading_invoice");?></a></th>
+								<th><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/index/" . $this->Html->ifSet($status) . "/?sort=total&order=" . ($sort == "total" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "total" ? " " . $order : "");?>"><?php $this->_("ClientInvoices.index.heading_amount");?></a></th>
+								<th><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/index/" . $this->Html->ifSet($status) . "/?sort=paid&order=" . ($sort == "paid" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "paid" ? " " . $order : "");?>"><?php $this->_("ClientInvoices.index.heading_paid");?></a></th>
+								<?php
+								if ($this->Html->ifSet($status) == "closed") {
+								?>
+								<th><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/index/" . $this->Html->ifSet($status) . "/?sort=date_closed&order=" . ($sort == "date_closed" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "date_closed" ? " " . $order : "");?>"><?php $this->_("ClientInvoices.index.heading_dateclosed");?></a></th>
+								<?php
+								}
+								else {
+								?>
+								<th><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/index/" . $this->Html->ifSet($status) . "/?sort=due&order=" . ($sort == "due" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "due" ? " " . $order : "");?>"><?php $this->_("ClientInvoices.index.heading_due");?></a></th>
+								<?php
+								}
+								?>
+								<th><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/index/" . $this->Html->ifSet($status) . "/?sort=date_billed&order=" . ($sort == "date_billed" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "date_billed" ? " " . $order : "");?>"><?php $this->_("ClientInvoices.index.heading_datebilled");?></a></th>
+								<th><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/index/" . $this->Html->ifSet($status) . "/?sort=date_due&order=" . ($sort == "date_due" ? $negate_order : $order));?>" class="ajax<?php echo $this->Html->safe($sort == "date_due" ? " " . $order : "");?>"><?php $this->_("ClientInvoices.index.heading_datedue");?></a></th>
+								<th><?php $this->_("ClientInvoices.index.heading_options");?></th>
+							</tr>
+						</thead>
+						<tbody>
+							<?php
+							// Loop through all invoices
+							for ($i=0; $i<$num_invoices; $i++) {
+							?>
+							<tr class="expand invoice_applied">
+								<td><?php $this->Html->_($invoices[$i]->id_code);?></td>
+								<td><?php echo $this->CurrencyFormat->format($this->Html->_($invoices[$i]->total, true), $this->Html->_($invoices[$i]->currency, true), array('html_code'=>true));?></td>
+								<td><?php echo $this->CurrencyFormat->format($this->Html->_($invoices[$i]->paid, true), $this->Html->_($invoices[$i]->currency, true), array('html_code'=>true));?></td>
+								<?php
+								if ($status == "closed") {
+								?>
+								<td><?php echo $this->Date->cast($this->Html->_($invoices[$i]->date_closed, true));?></td>
+								<?php
+								}
+								else {
+								?>
+								<td><?php echo $this->CurrencyFormat->format($this->Html->_($invoices[$i]->due, true), $this->Html->_($invoices[$i]->currency, true), array('html_code'=>true));?></td>
+								<?php
+								}
+								?>
+								<td><?php echo $this->Date->cast($this->Html->_($invoices[$i]->date_billed, true));?></td>
+								<td><?php echo $this->Date->cast($this->Html->_($invoices[$i]->date_due, true));?></td>
+								<td>
+									<div class="btn-group">
+										<?php
+										if ($this->Html->ifSet($status) == "open") {
+										?>
+										<a href="<?php echo $this->Html->safe($this->base_uri . "pay/method/" . $this->Html->ifSet($invoices[$i]->id) . "/");?>" class="btn btn-xs btn-default">
+											<i class="fa fa-plus-circle fa-fw"></i> <?php $this->_("ClientInvoices.index.option_pay");?>
+										</a>
+                                        <button class="btn btn-xs btn-default dropdown-toggle" data-toggle="dropdown" type="button">
+											<span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu">
+											<li>
+												<a href="<?php echo $this->Html->safe($this->base_uri . "invoices/view/" . $this->Html->ifSet($invoices[$i]->id) . "/");?>">
+													<i class="fa fa-file-text-o fa-fw"></i> <?php $this->_("ClientInvoices.index.option_view");?>
+												</a>
+											</li>
+										</ul>
+										<?php
+										}
+										else {
+										?>
+										<a href="<?php echo $this->Html->safe($this->base_uri . "invoices/view/" . $this->Html->ifSet($invoices[$i]->id) . "/");?>" class="btn btn-xs btn-default">
+											<i class="fa fa-file-text-o fa-fw"></i> <?php $this->_("ClientInvoices.index.option_view");?>
+										</a>
+										<?php
+										}
+										?>
+									</div>
+								</td>
+							</tr>
+							<tr class="expand_details" id="invoices_<?php $this->Html->_($invoices[$i]->id);?>">
+								<td colspan="8" class="subtable">
+								</td>
+							</tr>
+							<?php
+							}
+							?>
+						</tbody>
+					</table>
+				</div>
+				<?php
+				}
+				else {
+				?>
+				<div class="alert alert-info">
+					<p>
+						<?php
+						$section_language = $this->_("ClientInvoices.index.category_" . $this->Html->ifSet($status), true);
+						$this->_("ClientInvoices.index.no_results", false, $section_language);
+						?>
+					</p>
+				</div>
+				<?php
+				}
+				?>
+			<?php
+			$this->WidgetClient->endBody();
+			if ($this->Pagination->hasPages()) {
+				$this->WidgetClient->startFooter();
+				$this->Pagination->build();
+				$this->WidgetClient->endFooter();
+			}
+			$this->WidgetClient->end();
+			
+			// Don't show this container when only rendering the widget section
+			if (!$this->Html->ifSet($render_section) && !$this->Html->ifSet($is_ajax)) {
+			?>
+		</div>
+			<?php
+			}
+			?>
+<script type="text/javascript">
+	$(document).ready(function() {
+		// Fetch all transactions applied to the given invoices
+		$(".invoice_applied").click(function() {
+			$(this).blestaUpdateRow("<?php echo $this->Html->safe($this->Html->_($this->base_uri, true) . "invoices/applied/");?>" + $(this).next("tr").attr("id").split("_")[1], ".subtable");
+		});
+	});
+</script>

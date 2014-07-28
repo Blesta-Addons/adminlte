@@ -1,0 +1,40 @@
+
+					<?php
+					if ($this->Html->ifSet($applied, false) && ($num_applied = count($applied)) > 0) {
+					?>
+					<div class="table-responsive">
+						<table class="table table-curved table-striped">
+							<thead>
+								<tr>
+									<th><i class="fa fa-share fa-flip-vertical"></i></th>
+									<th><?php $this->_("ClientTransactions.applied.heading_invoice");?></th>
+									<th><?php $this->_("ClientTransactions.applied.heading_amount");?></th>
+									<th><?php $this->_("ClientTransactions.applied.heading_appliedon");?></th>
+								</tr>
+							</thead>
+							<tbody>
+								<?php
+								for ($i=0; $i<$num_applied; $i++) {
+								?>
+								<tr>
+									<td>&nbsp;</td>
+									<td><a href="<?php echo $this->Html->safe($this->base_uri . "invoices/view/" . $this->Html->ifSet($applied[$i]->invoice_id) . "/");?>"><?php $this->Html->_($applied[$i]->invoice_id_code);?></a></td>
+									<td><?php echo $this->CurrencyFormat->format($this->Html->_($applied[$i]->applied_amount, true), $this->Html->_($applied[$i]->currency, true), array('html_code'=>true));?></td>
+									<td><?php echo $this->Date->cast($this->Html->_($applied[$i]->applied_date, true), "date_time");?></td>
+								</tr>
+								<?php
+								}
+								?>
+							</tbody>
+						</table>
+					</div>
+					<?php
+					}
+					else {
+					?>
+					<div class="alert alert-info">
+						<p><?php $this->_("ClientTransactions.applied.no_results");?></p>
+					</div>
+					<?php
+					}
+					?>
